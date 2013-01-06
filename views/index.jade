@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  script(src='/javascripts/three.min.js')
+  script(src='/javascripts/jquery-1.8.3.min.js')
+  script(src='/javascripts/stats.min.js')
+  script(src='/javascripts/tetris.js')
+  script(src='/javascripts/cufon-yui.js')
+  script(src='/javascripts/Blox_400.font.js')
+  div(id="menu")
+    h1= title
+    p
+      |Movement: arrows
+      br
+      |Rotation: AD/SW/QE
+      br
+      |Author: Jeremy
+    button(id="play_button") Play
+  div#points 0
+  script.
+    Cufon.replace('#menu h1');
+    Cufon.replace('#points');
