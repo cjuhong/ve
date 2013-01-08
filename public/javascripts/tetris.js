@@ -41,7 +41,7 @@ Tetris.init = function() {
 
   // attach the render-supplied DOM element
   document.body.appendChild(Tetris.renderer.domElement);
-  
+
   // configuration object
   var boundingBoxConfig = {
     width: 360,
@@ -55,9 +55,10 @@ Tetris.init = function() {
   Tetris.blockSize = boundingBoxConfig.width/boundingBoxConfig.splitX;
 
   var boundingBox = new THREE.Mesh(
-    new THREE.CubeGeometry(boundingBoxConfig.width, boundingBoxConfig.height, boundingBoxConfig.depth, boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ), 
+    new THREE.CubeGeometry(boundingBoxConfig.width, boundingBoxConfig.height, boundingBoxConfig.depth, boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ),
     new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
   );
+//  boundingBox.position.z = 0;
   Tetris.scene.add(boundingBox);
 
   Tetris.renderer.render(Tetris.scene, Tetris.camera);
@@ -123,7 +124,7 @@ Tetris.addStaticBlock = function(x,y,z) {
 
   var mesh = THREE.SceneUtils.createMultiMaterialObject(new THREE.CubeGeometry( Tetris.blockSize, Tetris.blockSize, Tetris.blockSize), [
     new THREE.MeshBasicMaterial({color: 0x000000, shading: THREE.FlatShading, wireframe: true, transparent: true}),
-    new THREE.MeshBasicMaterial({color: Tetris.zColors[z]}) 
+    new THREE.MeshBasicMaterial({color: Tetris.zColors[z]})
   ] );
 
   mesh.position.x = (x - Tetris.boundingBoxConfig.splitX/2)*Tetris.blockSize + Tetris.blockSize/2;
