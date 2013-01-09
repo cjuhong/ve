@@ -103,17 +103,7 @@ Tetris.Block.petrify = function() {
     Tetris.addStaticBlock(Tetris.Block.position.x + shape[i].x, Tetris.Block.position.y + shape[i].y, Tetris.Block.position.z + shape[i].z);
   }
 };
-Tetris.start = function() {
-  document.getElementById("menu").style.display = "none";
-  Tetris.pointsDOM = document.getElementById("points");
-  Tetris.pointsDOM.style.display = "block";
-  Tetris.Block.generate(); // add this line
-  Tetris.animate();
-};
-while(Tetris.cumulatedFrameTime > Tetris.gameStepTime) {
-   Tetris.cumulatedFrameTime -= Tetris.gameStepTime;
-   Tetris.Block.move(0,0,-1); // add this line
-}
+
 window.addEventListener('keydown', function (event) {
   var key = event.which ? event.which : event.keyCode;
 

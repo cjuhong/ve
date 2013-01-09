@@ -77,7 +77,7 @@ Tetris.start = function() {
   document.getElementById("menu").style.display = "none";
   Tetris.pointsDOM = document.getElementById("points");
   Tetris.pointsDOM.style.display = "block";
-
+  Tetris.Block.generate(); // add this line
   Tetris.animate();
   Tetris.Block.generate();
 };
@@ -108,6 +108,7 @@ Tetris.animate = function() {
   while(Tetris.cumulatedFrameTime > Tetris.gameStepTime) {
     // block movement will go here
     Tetris.cumulatedFrameTime -= Tetris.gameStepTime;
+    Tetris.Block.move(0,0,-1); // add this line
   }
 
   Tetris.renderer.render(Tetris.scene, Tetris.camera);
