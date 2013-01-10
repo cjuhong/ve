@@ -94,7 +94,7 @@ Tetris.Block.move = function(x,y,z) {
 };
 Tetris.Block.hitBottom = function() {
   Tetris.Block.petrify();
-  Tetris.scene.removeObject(Tetris.Block.mesh);
+  Tetris.scene.remove(Tetris.Block.mesh);
   Tetris.Block.generate();
 };
 Tetris.Block.petrify = function() {
