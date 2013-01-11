@@ -79,7 +79,6 @@ Tetris.start = function() {
   Tetris.pointsDOM.style.display = "block";
   Tetris.Block.generate(); // add this line
   Tetris.animate();
-  Tetris.Block.generate();
 };
 if ( !window.requestAnimationFrame ) {
   window.requestAnimationFrame = ( function() {

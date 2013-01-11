@@ -43,8 +43,8 @@ Tetris.Block.position = {};
 Tetris.Block.generate = function() {
   var geometry, tmpGeometry;
 
-  var type = 1;
-  //  var type = Math.floor(Math.random()*(Tetris.Block.shapes.length));
+  //var type = 1;
+  var type = Math.floor(Math.random()*(Tetris.Block.shapes.length));
   this.blockType = type;
 
   Tetris.Block.shape = [];
