@@ -67,6 +67,9 @@ Tetris.init = function() {
   Tetris.stats.domElement.style.top = '10px';
   Tetris.stats.domElement.style.left = '10px';
   document.body.appendChild( Tetris.stats.domElement );
+  
+  // add anywhere in Tetris.init
+  Tetris.Board.init(boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ);
 
   document.getElementById("play_button").addEventListener('click', function (event) {
     event.preventDefault();

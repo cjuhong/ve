@@ -101,6 +101,7 @@ Tetris.Block.petrify = function() {
   var shape = Tetris.Block.shape;
   for(var i = 0 ; i < shape.length; i++) {
     Tetris.addStaticBlock(Tetris.Block.position.x + shape[i].x, Tetris.Block.position.y + shape[i].y, Tetris.Block.position.z + shape[i].z);
+    Tetris.Board.fields[Tetris.Block.position.x + shape[i].x][Tetris.Block.position.y + shape[i].y][Tetris.Block.position.z + shape[i].z] = Tetris.Board.FIELD.PETRIFIED;
   }
 };
 
@@ -109,10 +110,12 @@ window.addEventListener('keydown', function (event) {
 
   switch(key) {
     case 38: // up (arrow)
-      Tetris.Block.move(0, 1, 0);
+//    Tetris.Block.move(0, 1, 0);
+    Tetris.camera.position.z -= 60;
       break;
     case 40: // down (arrow)
-      Tetris.Block.move(0, -1, 0);
+//    Tetris.Block.move(0, -1, 0);
+    Tetris.camera.position.z += 60;
       break;
     case 37: // left(arrow)
       Tetris.Block.move(-1, 0, 0);
