@@ -4,5 +4,5 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Three.js Tetris' });
+  res.render('index', { title: 'Virtual Exhibition' });
 };
