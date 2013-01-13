@@ -94,8 +94,8 @@ if ( !window.requestAnimationFrame ) {
                                        };
                                    })();
 }
-Tetris.gameStepTime = 1000;
 
+Tetris.gameStepTime = 1000;
 Tetris.frameTime = 0; // ms
 Tetris.cumulatedFrameTime = 0; // ms
 Tetris._lastFrameTime = Date.now(); // timestamp
