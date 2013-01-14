@@ -6,17 +6,17 @@ block content
   script(src='/javascripts/cufon-yui.js')
   script(src='/javascripts/Blox_400.font.js')
   script(src='/javascripts/ve.js')
-  script(src='/javascripts/ve.block.js')
-  script(src='/javascripts/ve.board.js')
+  script(src='/javascripts/ve.utils.js')
+  script(src='/javascripts/ve.hall.js')
   div(id="menu")
     h1= title
     p
       |Movement: arrows
       br
-      |Rotation: AD/SW/QE
+      |Author: Jeremy
       br
-      |Author: University of Macau
-    button(id="play_button") Play
+      |University Of Macau
+    button(id="enter_button") Enter
   div#points 0
   script.
     Cufon.replace('#menu h1');

@@ -1,3 +1,4 @@
+
 var VE = {};
 
 VE.init = function() {
@@ -22,9 +23,6 @@ VE.init = function() {
 
   // the camera starts at 0,0,0 so pull it back
   VE.camera.position.z = 600;
-  console.log(VE.camera.position.x);
-  console.log(VE.camera.position.y);
-  console.log(VE.camera.position.z);
   VE.scene.add(VE.camera);
 
   // start the renderer
@@ -33,7 +31,6 @@ VE.init = function() {
   // attach the render-supplied DOM element
   document.body.appendChild(VE.renderer.domElement);
 
-  // to be continued...
   // configuration object
   var boundingBoxConfig = {
     width: 360,
@@ -53,10 +50,6 @@ VE.init = function() {
       boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ),
     new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
   );
-  console.log(boundingBox.position.x);
-  console.log(boundingBox.position.y);
-  console.log(boundingBox.position.z);
-
   VE.scene.add(boundingBox);
 
   // first render
@@ -67,22 +60,24 @@ VE.init = function() {
   VE.stats.domElement.style.top = '10px';
   VE.stats.domElement.style.left = '10px';
   document.body.appendChild( VE.stats.domElement );
-  
-  // add anywhere in VE.init
-  VE.Board.init(boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ);
 
-  document.getElementById("play_button").addEventListener('click', function (event) {
+  document.getElementById("enter_button").addEventListener('click', function (event) {
     event.preventDefault();
     VE.start();
+
   });
 };
+
+
 VE.start = function() {
   document.getElementById("menu").style.display = "none";
   VE.pointsDOM = document.getElementById("points");
   VE.pointsDOM.style.display = "block";
-  VE.Block.generate(); // add this line
   VE.animate();
+  VE.Hall.generateBooths();
+  VE.Utils.funcionTesting();
 };
+
 if ( !window.requestAnimationFrame ) {
   window.requestAnimationFrame = ( function() {
                                      return window.webkitRequestAnimationFrame ||
@@ -94,58 +89,50 @@ if ( !window.requestAnimationFrame ) {
                                        };
                                    })();
 }
-
-VE.gameStepTime = 1000;
+VE.StepTime = 1000;
 VE.frameTime = 0; // ms
+VE.over = false;
 VE.cumulatedFrameTime = 0; // ms
 VE._lastFrameTime = Date.now(); // timestamp
 
-VE.gameOver = false;
 VE.animate = function() {
   var time = Date.now();
   VE.frameTime = time - VE._lastFrameTime;
   VE._lastFrameTime = time;
   VE.cumulatedFrameTime += VE.frameTime;
 
-  while(VE.cumulatedFrameTime > VE.gameStepTime) {
+  while(VE.cumulatedFrameTime > VE.StepTime) {
     // block movement will go here
     VE.cumulatedFrameTime -= VE.gameStepTime;
-    VE.Block.move(0,0,-1); // add this line
   }
 
   VE.renderer.render(VE.scene, VE.camera);
 
   VE.stats.update();
 
-  if(!VE.gameOver) window.requestAnimationFrame(VE.animate);
-}
+  if(!VE.over) window.requestAnimationFrame(VE.animate);
+};
+
 window.addEventListener("load", VE.init);
 
-VE.staticBlocks = [];
-VE.zColors = [
-  0x6666ff, 0x66ffff, 0xcc68EE, 0x666633, 0x66ff66, 0x9966ff, 0x00ff66, 0x66EE33, 0x003399, 0x330099, 0xFFA500, 0x99ff00, 0xee1289, 0x71C671, 0x00BFFF, 0x666633, 0x669966, 0x9966ff
-];
-
-VE.addStaticBlock = function(x,y,z) {
-  if(VE.staticBlocks[x] === undefined) VE.staticBlocks[x] = [];
-  if(VE.staticBlocks[x][y] === undefined) VE.staticBlocks[x][y] = [];
-
-  var mesh = THREE.SceneUtils.createMultiMaterialObject(new THREE.CubeGeometry( VE.blockSize, VE.blockSize, VE.blockSize), [
-    new THREE.MeshBasicMaterial({color: 0x000000, shading: THREE.FlatShading, wireframe: true, transparent: true}),
-    new THREE.MeshBasicMaterial({color: VE.zColors[z]})
-  ] );
-
-  mesh.position.x = (x - VE.boundingBoxConfig.splitX/2)*VE.blockSize + VE.blockSize/2;
-  mesh.position.y = (y - VE.boundingBoxConfig.splitY/2)*VE.blockSize + VE.blockSize/2;
-  mesh.position.z = (z - VE.boundingBoxConfig.splitZ/2)*VE.blockSize + VE.blockSize/2;
-  mesh.overdraw = true;
-
-  VE.scene.add(mesh);
-  VE.staticBlocks[x][y][z] = mesh;
-};
-VE.currentPoints = 0;
-VE.addPoints = function(n) {
-  VE.currentPoints += n;
-  VE.pointsDOM.innerHTML = VE.currentPoints;
-  Cufon.replace('#points');
-}
+window.addEventListener('keydown', function (event) {
+  var key = event.which ? event.which : event.keyCode;
+  switch(key) {
+    case 38: // up (arrow)
+        //VE.Block.move(0, 1, 0);
+      VE.camera.position.z -= 10;
+      break;
+    case 40: // down (arrow)
+      //VE.Block.move(0, -1, 0);
+     VE.camera.position.z += 10;
+      break;
+    case 37: // left(arrow)
+      VE.Block.move(-1, 0, 0);
+      console.log(VE.Block.position.x);
+      break;
+    case 39: // right (arrow)
+      VE.Block.move(1, 0, 0);
+      console.log(VE.Block.position.x);
+      break;
+  }
+}, false);

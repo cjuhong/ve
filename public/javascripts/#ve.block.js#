@@ -10,7 +10,7 @@ VE.Utils.roundVector = function(v) {
   v.z = Math.round(v.z);
 };
 
-VE.Block = {};
+VE.Block = {};w
 
 VE.Block.shapes = [
   [
