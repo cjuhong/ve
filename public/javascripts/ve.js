@@ -1,37 +1,52 @@
 var VE = {};
 
+
 VE.init = function() {
   // set the scene size
   var WIDTH = window.innerWidth,
       HEIGHT = window.innerHeight;
 
   // set some camera attributes
-  var VIEW_ANGLE = 45,
+  var VIEW_ANGLE = 75,
       ASPECT = WIDTH / HEIGHT,
       NEAR = 0.1,
       FAR = 10000;
 
+  var boundingBoxConfig = {
+    width: 1080,
+    height: 360,
+    depth: 2400,
+    splitX: 18,
+    splitY: 6,
+    splitZ: 40
+  };
+
+  VE.boundingBoxConfig =  boundingBoxConfig;
+
+  VE.clock = new THREE.Clock();
+  VE.controls = undefined;
   // create a WebGL renderer, camera
   // and a scene
   VE.renderer = new THREE.WebGLRenderer();
   VE.camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
-                                                ASPECT,
-                                                NEAR,
-                                                FAR  );
+                                            ASPECT,
+                                            NEAR,
+                                            FAR  );
   VE.scene = new THREE.Scene();
-  //var   controls = new THREE.FirstPersonControls( VE.camera );
+
 
   // the camera starts at 0,0,0 so pull it back
-  //VE.camera.position.z = 600;
+  //  VE.camera.position.z = -boundingBoxConfig.height/2 ;
+  VE.camera.position.z = -360 ;
   VE.scene.add(VE.camera);
 
 
   //var clock = new THREE.Clock();
-
-  //controls.movementSpeed = 70;
-  //controls.lookSpeed = 0.05;
-  //controls.noFly = true;
-  //controls.lookVertical = false;
+  VE.controls = new THREE.FirstPersonControls( VE.camera );
+  VE.controls.movementSpeed = 70;
+  VE.controls.lookSpeed = 0.05;
+  VE.controls.noFly = true;
+  VE.controls.lookVertical = true;
 
   // start the renderer
   VE.renderer.setSize(WIDTH, HEIGHT);
@@ -40,17 +55,10 @@ VE.init = function() {
   document.body.appendChild(VE.renderer.domElement);
 
   // configuration object
-  var boundingBoxConfig = {
-    width: 360,
-    height: 360,
-    depth: 1200,
-    splitX: 6,
-    splitY: 6,
-    splitZ: 20
-  };
 
   VE.boundingBoxConfig = boundingBoxConfig;
   VE.blockSize = boundingBoxConfig.width/boundingBoxConfig.splitX;
+
 
   var boundingBox = new THREE.Mesh(
     new THREE.CubeGeometry(
@@ -81,6 +89,7 @@ VE.start = function() {
   document.getElementById("menu").style.display = "none";
   VE.pointsDOM = document.getElementById("points");
   VE.pointsDOM.style.display = "block";
+  VE.Hall.addBoothToScene();
   VE.animate();
   VE.Hall.generateBooths();
   VE.Utils.funcionTesting();
@@ -89,34 +98,38 @@ VE.start = function() {
 
 if ( !window.requestAnimationFrame ) {
   window.requestAnimationFrame = ( function() {
-                                     return window.webkitRequestAnimationFrame ||
-                                       window.mozRequestAnimationFrame ||
-                                       window.oRequestAnimationFrame ||
-                                       window.msRequestAnimationFrame ||
-                                       function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
-                                         window.setTimeout( callback, 1000 / 60 );
-                                       };
-                                   })();
+    return window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+        window.setTimeout( callback, 1000 / 60 );
+      };
+  })();
 }
-VE.StepTime = 1000;
-VE.frameTime = 0; // ms
+
 VE.over = false;
-VE.cumulatedFrameTime = 0; // ms
-VE._lastFrameTime = Date.now(); // timestamp
+/*
+ VE.StepTime = 1000;
+ VE.frameTime = 0; 
+ VE.cumulatedFrameTime = 0; 
+ VE._lastFrameTime = Date.now(); 
+ */
 
 VE.animate = function() {
-  var time = Date.now();
+  //  var time = Date.now();
   //var delta = clock.getDelta();
 
-  VE.frameTime = time - VE._lastFrameTime;
-  VE._lastFrameTime = time;
-  VE.cumulatedFrameTime += VE.frameTime;
+  //VE.frameTime = time - VE._lastFrameTime;
+  //VE._lastFrameTime = time;
+  //VE.cumulatedFrameTime += VE.frameTime;
 
-  while(VE.cumulatedFrameTime > VE.StepTime) {
-    // block movement will go here
-    VE.cumulatedFrameTime -= VE.gameStepTime;
-  }
+  //while(VE.cumulatedFrameTime > VE.StepTime) {
+  // block movement will go here
+  // VE.cumulatedFrameTime -= VE.gameStepTime;
+  // }
   //controls.update(delta);
+  VE.controls.update(VE.clock.getDelta());
   VE.renderer.render(VE.scene, VE.camera);
 
   VE.stats.update();
