@@ -1,4 +1,3 @@
-
 var VE = {};
 
 VE.init = function() {
@@ -20,10 +19,19 @@ VE.init = function() {
                                                 NEAR,
                                                 FAR  );
   VE.scene = new THREE.Scene();
+  //var   controls = new THREE.FirstPersonControls( VE.camera );
 
   // the camera starts at 0,0,0 so pull it back
-  VE.camera.position.z = 600;
+  //VE.camera.position.z = 600;
   VE.scene.add(VE.camera);
+
+
+  //var clock = new THREE.Clock();
+
+  //controls.movementSpeed = 70;
+  //controls.lookSpeed = 0.05;
+  //controls.noFly = true;
+  //controls.lookVertical = false;
 
   // start the renderer
   VE.renderer.setSize(WIDTH, HEIGHT);
@@ -76,6 +84,7 @@ VE.start = function() {
   VE.animate();
   VE.Hall.generateBooths();
   VE.Utils.funcionTesting();
+  VE.Booth.testingFuntion();
 };
 
 if ( !window.requestAnimationFrame ) {
@@ -97,6 +106,8 @@ VE._lastFrameTime = Date.now(); // timestamp
 
 VE.animate = function() {
   var time = Date.now();
+  //var delta = clock.getDelta();
+
   VE.frameTime = time - VE._lastFrameTime;
   VE._lastFrameTime = time;
   VE.cumulatedFrameTime += VE.frameTime;
@@ -105,7 +116,7 @@ VE.animate = function() {
     // block movement will go here
     VE.cumulatedFrameTime -= VE.gameStepTime;
   }
-
+  //controls.update(delta);
   VE.renderer.render(VE.scene, VE.camera);
 
   VE.stats.update();
@@ -114,25 +125,3 @@ VE.animate = function() {
 };
 
 window.addEventListener("load", VE.init);
-
-window.addEventListener('keydown', function (event) {
-  var key = event.which ? event.which : event.keyCode;
-  switch(key) {
-    case 38: // up (arrow)
-        //VE.Block.move(0, 1, 0);
-      VE.camera.position.z -= 10;
-      break;
-    case 40: // down (arrow)
-      //VE.Block.move(0, -1, 0);
-     VE.camera.position.z += 10;
-      break;
-    case 37: // left(arrow)
-      VE.Block.move(-1, 0, 0);
-      console.log(VE.Block.position.x);
-      break;
-    case 39: // right (arrow)
-      VE.Block.move(1, 0, 0);
-      console.log(VE.Block.position.x);
-      break;
-  }
-}, false);
