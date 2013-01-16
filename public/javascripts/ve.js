@@ -7,21 +7,22 @@ VE.init = function() {
       HEIGHT = window.innerHeight;
 
   // set some camera attributes
-  var VIEW_ANGLE = 75,
+  var VIEW_ANGLE = 45,
       ASPECT = WIDTH / HEIGHT,
       NEAR = 0.1,
       FAR = 10000;
+  VE.boothSize = {};
 
-  var boundingBoxConfig = {
-    width: 1080,
+  VE.boundingBoxConfig = {
+    width: 3600,
     height: 360,
     depth: 2400,
-    splitX: 18,
+    splitX: 60,
     splitY: 6,
     splitZ: 40
   };
 
-  VE.boundingBoxConfig =  boundingBoxConfig;
+  var boundingBoxConfig = VE.boundingBoxConfig;
 
   VE.clock = new THREE.Clock();
   VE.controls = undefined;
@@ -37,17 +38,18 @@ VE.init = function() {
 
   // the camera starts at 0,0,0 so pull it back
   //  VE.camera.position.z = -boundingBoxConfig.height/2 ;
-  VE.camera.position.z = -360 ;
+  //VE.camera.position.z = -360 ;
   VE.scene.add(VE.camera);
 
 
-  //var clock = new THREE.Clock();
+
+  /*
   VE.controls = new THREE.FirstPersonControls( VE.camera );
   VE.controls.movementSpeed = 70;
   VE.controls.lookSpeed = 0.05;
   VE.controls.noFly = true;
   VE.controls.lookVertical = true;
-
+*/
   // start the renderer
   VE.renderer.setSize(WIDTH, HEIGHT);
 
@@ -79,6 +81,29 @@ VE.init = function() {
 
   document.getElementById("enter_button").addEventListener('click', function (event) {
     event.preventDefault();
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("size").style.display = "block";
+    VE.pointsDOM = document.getElementById("points");
+    VE.pointsDOM.style.display = "block";
+//    VE.start();
+
+  });
+
+  document.getElementById("ok").addEventListener('click', function (event) {
+    event.preventDefault();
+
+    VE.controls = new THREE.FirstPersonControls( VE.camera );
+    VE.controls.movementSpeed = 70;
+    VE.controls.lookSpeed = 0.05;
+    VE.controls.noFly = true;
+    VE.controls.lookVertical = true;
+
+    document.getElementById("size").style.display = "none";
+    var row = document.getElementById("row");
+    var column = document.getElementById("column");
+
+    VE.boothSize.row = Number(row.value);
+    VE.boothSize.column = Number(column.value);
     VE.start();
 
   });
@@ -86,14 +111,9 @@ VE.init = function() {
 
 
 VE.start = function() {
-  document.getElementById("menu").style.display = "none";
-  VE.pointsDOM = document.getElementById("points");
-  VE.pointsDOM.style.display = "block";
+  VE.Hall.generateBooths(VE.boothSize);
   VE.Hall.addBoothToScene();
   VE.animate();
-  VE.Hall.generateBooths();
-  VE.Utils.funcionTesting();
-  VE.Booth.testingFuntion();
 };
 
 if ( !window.requestAnimationFrame ) {
@@ -109,11 +129,12 @@ if ( !window.requestAnimationFrame ) {
 }
 
 VE.over = false;
+
 /*
  VE.StepTime = 1000;
- VE.frameTime = 0; 
- VE.cumulatedFrameTime = 0; 
- VE._lastFrameTime = Date.now(); 
+ VE.frameTime = 0;
+ VE.cumulatedFrameTime = 0;
+ VE._lastFrameTime = Date.now();
  */
 
 VE.animate = function() {

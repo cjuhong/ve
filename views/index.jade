@@ -1,5 +1,4 @@
 extends layout
-
 block content
   script(src='/javascripts/three.min.js')
   script(src='/javascripts/FirstPersonControls.js')
@@ -19,7 +18,19 @@ block content
       |Author: Jeremy
       br
       |University Of Macau
+      br
+      |cjuhong@gmail.com
     button(id="enter_button") Enter
+  div#size
+    |row:
+    br
+    input(id='row', type="number", name='row', max="10", min="1")
+    br
+    |column:
+    br
+    input(id='column', type='number', name='column', max="10", min="1")
+    br
+    button(id='ok') OK
   div#points 0
   script.
     Cufon.replace('#menu h1');

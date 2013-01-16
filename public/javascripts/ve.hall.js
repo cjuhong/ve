@@ -4,25 +4,43 @@ VE.Hall = {};
 
 VE.Hall.booths = [];
 
-VE.Hall.generateBooths = function() {
-//  console.log("testing generate");
+/**
+ *  var boundingBoxConfig = {
+ *   width: 3600,
+ *   height: 360,
+ *   depth: 2400,
+ *   splitX: 60,
+ *   splitY: 6,
+ *   splitZ: 40
+ *  };
+ */
+
+VE.Hall.generateBooths = function(boothSize) {
+  //  console.log("testing generate");
+  console.log(boothSize);
+  var boundingBoxConfig = VE.boundingBoxConfig;
   var box = {
-    width: 100,
-    height: 100,
-    depth: 100,
+    width: 200,
+    height: 200,
+    depth: 200,
     x: 10,
     y: -VE.boundingBoxConfig.height/2,
     z: 10
   }
 
+  for(var i=0; i<boothSize.row; i++) {
+    for(var j=0; j<boothSize.column; j++) {
+
+    }
+  }
+
   VE.Hall.booths.push(VE.Booth.create(box));
-//  console.log(VE.Hall.booths);
+//  console.log(boundingBoxConfig);
 };
 
 VE.Hall.addBoothToScene = function() {
-  VE.Hall.generateBooths();
   var booths = VE.Hall.booths;
   for(var i=0; i<booths.length; i++) {
     VE.scene.add(booths[i]);
   }
-  }
+}
