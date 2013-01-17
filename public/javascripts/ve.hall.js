@@ -17,7 +17,7 @@ VE.Hall.booths = [];
 
 VE.Hall.generateBooths = function(boothSize) {
   //  console.log("testing generate");
-  console.log(boothSize);
+
   var boundingBoxConfig = VE.boundingBoxConfig;
   var box = {
     width: 200,
@@ -28,14 +28,17 @@ VE.Hall.generateBooths = function(boothSize) {
     z: 10
   }
 
-  for(var i=0; i<boothSize.row; i++) {
-    for(var j=0; j<boothSize.column; j++) {
-
+  var row = boothSize.row/2;
+  var column = boothSize.column/2;
+  for(var i= -column; i<column; i++) {
+    for(var j= -row; j<row; j++) {
+      console.log(i);
+      console.log(j);
     }
   }
 
   VE.Hall.booths.push(VE.Booth.create(box));
-//  console.log(boundingBoxConfig);
+  //console.log(boundingBoxConfig);
 };
 
 VE.Hall.addBoothToScene = function() {
