@@ -7,25 +7,31 @@ VE.Model.testing = function() {
 };
 
 VE.Model.loader = function() {
+  var ambient = new THREE.AmbientLight( 0x101030 );
+  VE.scene.add( ambient );
+
+  var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+  directionalLight.position.set( 0, 0, 1 ).normalize();
+  VE.scene.add( directionalLight );
+
   var texture = new THREE.Texture();
-  var loader = new THREE.ImageLoader();
-  loader.addEventListener( 'load', function ( event ) {
+  var loaderImg = new THREE.ImageLoader();
+  loaderImg.addEventListener( 'load', function ( event ) {
     texture.image = event.content;
     texture.needsUpdate = true;
   } );
-  loader.load( 'textures/ash_uvgrid01.jpg' );
+  loaderImg.load( 'textures/ash_uvgrid01.jpg' );
 
   // model
-  var loader = new THREE.OBJLoader();
-  loader.addEventListener( 'load', function ( event ) {
+  var loaderObj = new THREE.OBJLoader();
+  loaderObj.addEventListener( 'load', function ( event ) {
     var object = event.content;
     object.traverse( function ( child ) {
       if ( child instanceof THREE.Mesh ) {
         child.material.map = texture;
       }
     } );
-    object.position.y = - 80;
     VE.scene.add( object );
   });
-  loader.load( 'model/obj/male02.obj' );
+  loaderObj.load( 'model/obj/male02.obj' );
 };
