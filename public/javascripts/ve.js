@@ -113,6 +113,7 @@ VE.init = function() {
 VE.start = function() {
   VE.Hall.generateBooths(VE.boothSize);
   VE.Hall.addBoothToScene();
+  VE.Model.loader();
   VE.animate();
 };
 
