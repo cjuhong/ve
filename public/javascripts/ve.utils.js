@@ -14,3 +14,9 @@ VE.Utils.roundVector = function(v) {
 VE.Utils.funcionTesting = function() {
   console.log("function testing");
 }
+VE.Utils.isEven = function(number) {
+  if( number%2 == 0 )
+    return true;
+  else
+    return false;
+}

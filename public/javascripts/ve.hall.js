@@ -23,21 +23,68 @@ VE.Hall.generateBooths = function(boothSize) {
     width: 200,
     height: 200,
     depth: 200,
-    x: 10,
-    y: -VE.boundingBoxConfig.height/2,
-    z: 10
+    x: 0,
+    y: 0-(VE.boundingBoxConfig.height/2 - 200/2),
+    z: 0
   }
-
-  var row = boothSize.row/2;
-  var column = boothSize.column/2;
-  for(var i= -column; i<column; i++) {
-    for(var j= -row; j<row; j++) {
-      console.log(i);
-      console.log(j);
+  if(VE.Utils.isEven(boothSize.row) && VE.Utils.isEven(boothSize.column)){
+    var row = boothSize.row/2;
+    var column = boothSize.column/2;
+    for(var i= -column; i<column; i++) {
+      box.z = 200 + i*400;
+      for(var j= -row; j<row; j++) {
+        box.x = 200 + j*400
+        console.log(box.x);
+        console.log(box.z);
+        VE.Hall.booths.push(VE.Booth.create(box));
+      }
+      box.x = 0;
+    }
+  }else if(VE.Utils.isEven(boothSize.row) && !VE.Utils.isEven(boothSize.column)){
+    console.log("hello column");
+    var row = boothSize.row/2;
+    var column = boothSize.column/2;
+    for(var i= -Math.floor(column); i<Math.round(column); i++) {
+      box.z = i*400;
+      for(var j= -row; j<row; j++) {
+        box.x = 200 + j*400
+        console.log(box.x);
+        console.log(box.z);
+        VE.Hall.booths.push(VE.Booth.create(box));
+      }
+      box.x = 0;
+    }
+  }else if (!VE.Utils.isEven(boothSize.row) && VE.Utils.isEven(boothSize.column)){
+    console.log("hello row");
+    var row = boothSize.row/2;
+    var column = boothSize.column/2;
+    for(var i= -column; i<column; i++) {
+      box.z = 200 + i*400;
+      for(var j= -Math.floor(row); j<Math.round(row); j++) {
+        box.x = j*400
+        console.log(box.x);
+        console.log(box.z);
+        VE.Hall.booths.push(VE.Booth.create(box));
+      }
+      box.x = 0;
+    }
+  }else{
+    console.log("hello column and row");
+    var row = boothSize.row/2;
+    var column = boothSize.column/2;
+    for(var i= -Math.floor(column); i<Math.round(column); i++) {
+      box.z = 200 + i*400;
+      for(var j= -Math.floor(row); j<Math.round(row); j++) {
+        box.x = 200 + j*400
+        console.log(box.x);
+        console.log(box.z);
+        VE.Hall.booths.push(VE.Booth.create(box));
+      }
+      box.x = 0;
     }
   }
 
-  VE.Hall.booths.push(VE.Booth.create(box));
+  //  console.log(VE.Utils.isEven(boothSize.row));
   //console.log(boundingBoxConfig);
 };
 
