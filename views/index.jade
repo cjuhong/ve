@@ -34,7 +34,19 @@ block content
     input(id='column', type='number', name='column', max="10", min="1")
     br
     button(id='ok') OK
+  div#model
+    |model:
+    br
+    input(id='obj', type="file", name='row', max="10", min="1")
+    br
+    |texture:
+    br
+    input(id='img', type='file', name='column', max="10", min="1")
+    br
+    button(id='load') LOAD
   div#points 0
+  div#model_choice
+    button(id="model_button") MODEL
   script.
     Cufon.replace('#menu h1');
     Cufon.replace('#points');
