@@ -107,6 +107,19 @@ VE.init = function() {
     VE.start();
 
   });
+
+  document.getElementById("model_button").addEventListener('click', function (event) {
+    event.preventDefault();
+
+    document.getElementById("model").style.display = "block";
+    var obj = document.getElementById("obj");
+    var img = document.getElementById("img");
+
+    //VE.boothSize.row = Number(row.value);
+    //VE.boothSize.column = Number(column.value);
+    //VE.start();
+
+  });
 };
 
 

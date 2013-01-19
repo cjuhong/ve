@@ -39,8 +39,8 @@ body {margin: 0; padding: 0; overflow: hidden;}
 
 #model {
     position: absolute;
-    width: 200px;
-    height: 250px;
+    width: 450px;
+    height: 200px;
 
     top: 50%; left: 50%;
     margin: -125px 0 0 -100px;
@@ -101,6 +101,20 @@ body {margin: 0; padding: 0; overflow: hidden;}
     color: #fff;
 }
 
+#model_choice button {
+    width: 80px;
+    height: 25px;
+
+    background-color: #C44032;
+
+    border: 3px solid #fff;
+    border-radius: 5px;
+
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
 #row {
     color: black;
 	text-align: left;
@@ -117,33 +131,30 @@ body {margin: 0; padding: 0; overflow: hidden;}
     text-align: left;
     cursor: pointer;
     display: block;
-    width: 50%;
+    letter-spacing: 4px;
+    text-shadow: 0 0 2px black;
+    word-spacing: 20px;
+}
+#img {
+    color: black;
+    text-align: left;
+    cursor: pointer;
+    display: block;
+    width: 100%;
     letter-spacing: 4px;
     text-shadow: 0 0 2px black;
     word-spacing: 20px;
 }
 
-#img {
-    color: black;
-	text-align: left;
-	cursor: pointer;
-	display: block;
-	width: 100%;
-	letter-spacing: 4px;
-	text-shadow: 0 0 2px black;
-	word-spacing: 20px;
-}
-
-
 #column {
     color: black;
-	text-align: left;
-	cursor: pointer;
-	display: block;
-	width: 100%;
-	letter-spacing: 4px;
-	text-shadow: 0 0 2px black;
-	word-spacing: 20px;
+    text-align: left;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    letter-spacing: 4px;
+    text-shadow: 0 0 2px black;
+    word-spacing: 20px;
 }
 
 #points {
@@ -189,5 +200,5 @@ body {margin: 0; padding: 0; overflow: hidden;}
     font-weight: bold;
     color: #fff;
 
-    text-align: right;
+    text-align: center;
 }
