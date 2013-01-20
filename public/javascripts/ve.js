@@ -110,11 +110,20 @@ VE.init = function() {
 
   document.getElementById("model_button").addEventListener('click', function (event) {
     event.preventDefault();
+    document.getElementById("model").style.display = "block";
+    //VE.boothSize.row = Number(row.value);
+    //VE.boothSize.column = Number(column.value);
+    //VE.start();
 
+  });
+
+  document.getElementById("load").addEventListener('click', function (event) {
+    event.preventDefault();
     document.getElementById("model").style.display = "block";
     var obj = document.getElementById("obj");
     var img = document.getElementById("img");
-
+    console.log("hello model");
+    //console.log($("#obj").attr());
     //VE.boothSize.row = Number(row.value);
     //VE.boothSize.column = Number(column.value);
     //VE.start();

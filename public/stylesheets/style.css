@@ -131,19 +131,14 @@ body {margin: 0; padding: 0; overflow: hidden;}
     text-align: left;
     cursor: pointer;
     display: block;
-    letter-spacing: 4px;
     text-shadow: 0 0 2px black;
-    word-spacing: 20px;
 }
 #img {
     color: black;
     text-align: left;
     cursor: pointer;
     display: block;
-    width: 100%;
-    letter-spacing: 4px;
     text-shadow: 0 0 2px black;
-    word-spacing: 20px;
 }
 
 #column {
