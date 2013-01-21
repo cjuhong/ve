@@ -111,19 +111,47 @@ VE.init = function() {
   document.getElementById("model_button").addEventListener('click', function (event) {
     event.preventDefault();
     document.getElementById("model").style.display = "block";
+    var model = {};
     //VE.boothSize.row = Number(row.value);
     //VE.boothSize.column = Number(column.value);
     //VE.start();
+    $("#obj").on('change', function() {
+      var obj = $(this).prop("files");
+      var oFReader = new FileReader();
+      oFReader.onload = function (FREvent) {
+        //document.getElementById("uploadPreview").src = oFREvent.target.result;
+        //console.log("obj");
+        //console.log(FREvent.target.result);
+        model.obj = FREvent.target.result;
+      };
+      oFReader.readAsDataURL(obj[0]);
+    });
+
+    $("#img").on('change', function() {
+      var img = $(this).prop("files");
+      var iFReader = new FileReader();
+      iFReader.onload = function (FREvent) {
+        //document.getElementById("uploadPreview").src = oFREvent.target.result;
+       // console.log("img");
+        //console.log(FREvent.target.result);
+        model.img = FREvent.target.result;
+      };
+      iFReader.readAsDataURL(img[0]);
+    });
+    VE.Model.models.push(model);
 
   });
 
   document.getElementById("load").addEventListener('click', function (event) {
     event.preventDefault();
-    document.getElementById("model").style.display = "block";
-    var obj = document.getElementById("obj");
-    var img = document.getElementById("img");
-    console.log("hello model");
-    //console.log($("#obj").attr());
+    document.getElementById("model").style.display = "none";
+    //var obj = document.getElementById("obj");
+    //var img = document.getElementById("img");
+    //console.log("hello model");
+    console.log(VE.Model.models[0]);
+    //bb = $("#obj").prop("files");
+    VE.Model.loader(VE.Model.models[0]);
+    //console.log(bb[0]);
     //VE.boothSize.row = Number(row.value);
     //VE.boothSize.column = Number(column.value);
     //VE.start();
@@ -135,7 +163,7 @@ VE.init = function() {
 VE.start = function() {
   VE.Hall.generateBooths(VE.boothSize);
   VE.Hall.addBoothToScene();
-  VE.Model.loader();
+//  VE.Model.loader();
   VE.animate();
 };
 

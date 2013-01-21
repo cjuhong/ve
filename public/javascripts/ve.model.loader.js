@@ -2,11 +2,13 @@ window.VE = window.VE  || {}; // equivalent to if(!window.VE) window.VE = {};
 
 VE.Model = {};
 
+VE.Model.models = [];
+
 VE.Model.testing = function() {
   console.log("testing");
 };
 
-VE.Model.loader = function() {
+VE.Model.loader = function(model) {
   var ambient = new THREE.AmbientLight( 0x101030 );
   VE.scene.add( ambient );
 
@@ -20,7 +22,8 @@ VE.Model.loader = function() {
     texture.image = event.content;
     texture.needsUpdate = true;
   } );
-  loaderImg.load( 'textures/ash_uvgrid01.jpg' );
+  loaderImg.load( model.img );
+//  loaderImg.load( 'textures/ash_uvgrid01.jpg' );
 
   // model
   var loaderObj = new THREE.OBJLoader();
@@ -33,5 +36,6 @@ VE.Model.loader = function() {
     } );
     VE.scene.add( object );
   });
-  loaderObj.load( 'model/obj/male02.obj' );
+  loaderObj.load( model.obj );
+//  loaderObj.load( 'model/obj/male02.obj' );
 };
