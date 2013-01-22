@@ -1,7 +1,6 @@
 extends layout
-block content
+block content 
   script(src='/javascripts/three.min.js')
-  script(src='/javascripts/Detector.js')
   script(src='/javascripts/FirstPersonControls.js')
   script(src='/javascripts/OBJLoader.js')
   script(src='/javascripts/jquery-1.8.3.min.js')
@@ -17,7 +16,7 @@ block content
   div(id="menu")
     h1= title
     p
-      |Movement: arrows
+      |Navigation: arrows
       br
       |Author: Jeremy
       br
@@ -35,6 +34,26 @@ block content
     input(id='column', type='number', name='column', max="10", min="1")
     br
     button(id='ok') OK
+  div#exhibitor_login
+    |name:
+    br
+    input(id='ex_name', type="text", name='ex_name')
+    br
+    |password:
+    br
+    input(id='ex_pwd', type='password', name='ex_pwd')
+    br
+    button(id='ex_login') LOGIN
+  div#admin_login
+    |name:
+    br
+    input(id='ad_name', type="text", name='ad_name')
+    br
+    |password:
+    br
+    input(id='ad_pwd', type='password', name='ad_pwd')
+    br
+    button(id='ad_login') LOGIN
   div#model
     |model:
     br
@@ -47,7 +66,12 @@ block content
     button(id='load') LOAD
   div#points 0
   div#model_choice
-    button(id="model_button") MODEL
+    button(id="admin_button") ADMIN
+    button(id="exhibitor_button") EXHIBITOR
+    button(id="visitor_button") VISITOR
+  div#operation
+    button(id="booth_button", class="admin") BOOTH
+    button(id="model_button", class="admin exhibitor") MODEL
   script.
     Cufon.replace('#menu h1');
     Cufon.replace('#points');

@@ -41,7 +41,8 @@ VE.init = function() {
   //VE.camera.position.z = -360 ;
   VE.scene.add(VE.camera);
 
-
+  var axis_helper = new THREE.AxisHelper(5000);
+  VE.scene.add(axis_helper);
 
   /*
   VE.controls = new THREE.FirstPersonControls( VE.camera );
@@ -82,9 +83,10 @@ VE.init = function() {
   document.getElementById("enter_button").addEventListener('click', function (event) {
     event.preventDefault();
     document.getElementById("menu").style.display = "none";
-    document.getElementById("size").style.display = "block";
+    document.getElementById("model_choice").style.display = "block";
     VE.pointsDOM = document.getElementById("points");
     VE.pointsDOM.style.display = "block";
+    $("#operation").css("display","block");
 //    VE.start();
 
   });
@@ -104,6 +106,46 @@ VE.init = function() {
 
     VE.boothSize.row = Number(row.value);
     VE.boothSize.column = Number(column.value);
+    VE.start();
+
+  });
+
+  $("#booth_button").on('click', function() {
+    document.getElementById("size").style.display = "block";
+  });
+
+  $("#exhibitor_button").on('click', function() {
+    document.getElementById("exhibitor_login").style.display = "block";
+
+  });
+
+  $("#admin_button").on('click', function() {
+    document.getElementById("admin_login").style.display = "block";
+  });
+
+  $("#ex_login").on('click', function() {
+    document.getElementById("exhibitor_login").style.display = "none";
+    $("#operation  .admin").css("display","none");
+    $("#operation  .exhibitor").css("display","block");
+  });
+
+  $("#ad_login").on('click', function() {
+    document.getElementById("admin_login").style.display = "none";
+    $("#operation  .exhibitor").css("display","none");
+    $("#operation  .admin").css("display","block");
+  });
+
+  $("#visitor_button").on('click', function(event) {
+    event.preventDefault();
+    $("#operation  .admin").css("display","none");
+    $("#operation  .exhibitor").css("display","none");
+
+    VE.controls = new THREE.FirstPersonControls( VE.camera );
+    VE.controls.movementSpeed = 70;
+    VE.controls.lookSpeed = 0.05;
+    VE.controls.noFly = true;
+    VE.controls.lookVertical = false;
+
     VE.start();
 
   });
