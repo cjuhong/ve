@@ -35,17 +35,19 @@ VE.init = function() {
                                             FAR  );
   VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
 
+
+
   VE.scene = new THREE.Scene();
 
 
-  // the camera starts at 0,0,0 so pull it back
-  //  VE.camera.position.z = -boundingBoxConfig.height/2 ;
-  //VE.camera.position.z = -360 ;
   VE.scene.add(VE.camera);
 
   var axis_helper = new THREE.AxisHelper(5000);
   VE.scene.add(axis_helper);
 
+  var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  //var light = new THREE.AmbientLight( 0xffeedd ); // strong white light
+  VE.scene.add( light );
   /*
   VE.controls = new THREE.FirstPersonControls( VE.camera );
   VE.controls.movementSpeed = 70;
@@ -130,6 +132,13 @@ VE.init = function() {
     document.getElementById("exhibitor_login").style.display = "none";
     $("#operation  .admin").css("display","none");
     $("#operation  .exhibitor").css("display","block");
+    VE.controls = new THREE.FirstPersonControls( VE.camera );
+    VE.controls.movementSpeed = 70;
+    VE.controls.lookSpeed = 0.05;
+    VE.controls.noFly = true;
+    VE.controls.lookVertical = false;
+
+    VE.start();
   });
 
   $("#ad_login").on('click', function() {
