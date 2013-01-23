@@ -75,6 +75,8 @@ VE.init = function() {
   );
   VE.scene.add(boundingBox);
 
+
+
   // first render
   VE.renderer.render(VE.scene, VE.camera);
   // to be continued...
@@ -235,6 +237,7 @@ VE.start = function() {
   VE.Hall.addBoothToScene();
 //  VE.Model.loader();
   VE.Hall.floor();
+  VE.Hall.sprite();
   //VE.DATGUI();
   VE.animate();
 };
