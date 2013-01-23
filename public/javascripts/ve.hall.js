@@ -94,3 +94,14 @@ VE.Hall.addBoothToScene = function() {
     VE.scene.add(booths[i]);
   }
 }
+
+
+VE.Hall.floor = function() {
+  var map_texture = THREE.ImageUtils.loadTexture( "textures/tile-pattern.jpg" );
+  var material = new THREE.SpriteMaterial( { map: map_texture, opacity: 1 } );
+  var sprite = new THREE.Sprite( material );
+  sprite.position.set( 0, 0, 0 );
+  sprite.scale.set( 50, 50, 50 );
+  VE.scene.add( sprite );
+  console.log("sprite comes");
+}

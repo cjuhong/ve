@@ -9,16 +9,16 @@ VE.Model.testing = function() {
 };
 
 VE.Model.loader = function(model) {
-  var ambient = new THREE.AmbientLight( 0x101030 );
-  VE.scene.add( ambient );
+  //var ambient = new THREE.AmbientLight( 0x101030 );
+  //VE.scene.add( ambient );
 
   //var directionalLight = new THREE.DirectionalLight( 0xffeedd );
   //directionalLight.position.set( 0, 0, 1 ).normalize();
   //VE.scene.add( directionalLight );
 
-  var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  //var light = new THREE.AmbientLight( 0x404040 ); // soft white light
   //var light = new THREE.AmbientLight( 0xffeedd ); // strong white light
-  VE.scene.add( light );
+  //VE.scene.add( light );
   var texture = new THREE.Texture();
   var loaderImg = new THREE.ImageLoader();
   loaderImg.addEventListener( 'load', function ( event ) {
@@ -37,6 +37,8 @@ VE.Model.loader = function(model) {
         child.material.map = texture;
       }
     } );
+    object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
+    object.scale.set(10.0,10.0,10.0);
     VE.scene.add( object );
   });
   loaderObj.load( model.obj );

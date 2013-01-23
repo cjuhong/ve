@@ -28,7 +28,7 @@ VE.init = function() {
   VE.controls = undefined;
   // create a WebGL renderer, camera
   // and a scene
-  VE.renderer = new THREE.WebGLRenderer();
+  VE.renderer = new THREE.WebGLRenderer({antialias:true});
   VE.camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
                                             ASPECT,
                                             NEAR,
@@ -39,14 +39,14 @@ VE.init = function() {
 
   VE.scene = new THREE.Scene();
 
-
+//  VE.scene.fog = new THREE.Fog( 0xffffff, 1500, 2100 );
   VE.scene.add(VE.camera);
 
   var axis_helper = new THREE.AxisHelper(5000);
   VE.scene.add(axis_helper);
 
-  var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-  //var light = new THREE.AmbientLight( 0xffeedd ); // strong white light
+  //var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  var light = new THREE.AmbientLight( 0xffeedd ); // strong white light
   VE.scene.add( light );
   /*
   VE.controls = new THREE.FirstPersonControls( VE.camera );
@@ -212,12 +212,30 @@ VE.init = function() {
 
   });
 };
-
+VE.DATGUI = function() {
+  var FizzyText = function() {
+    this.message = 'dat.gui';
+    this.speed = 0.8;
+    this.displayOutline = false;
+    this.explode = function() { console.log("DATGUI") };
+  // Define render logic ...
+  };
+  var text = new FizzyText();
+  var gui = new dat.GUI({
+    //height : 5 * 32 - 1
+  });
+  gui.add(text, 'message');
+  gui.add(text, 'speed', -5, 5);
+  gui.add(text, 'displayOutline');
+  gui.add(text, 'explode');
+}
 
 VE.start = function() {
   VE.Hall.generateBooths(VE.boothSize);
   VE.Hall.addBoothToScene();
 //  VE.Model.loader();
+  VE.Hall.floor();
+  //VE.DATGUI();
   VE.animate();
 };
 
