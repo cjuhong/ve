@@ -33,6 +33,8 @@ VE.init = function() {
                                             ASPECT,
                                             NEAR,
                                             FAR  );
+  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
+
   VE.scene = new THREE.Scene();
 
 
@@ -86,6 +88,7 @@ VE.init = function() {
     document.getElementById("model_choice").style.display = "block";
     VE.pointsDOM = document.getElementById("points");
     VE.pointsDOM.style.display = "block";
+//    VE.over = true;
     $("#operation").css("display","block");
 //    VE.start();
 
@@ -243,6 +246,20 @@ VE.animate = function() {
   // VE.cumulatedFrameTime -= VE.gameStepTime;
   // }
   //controls.update(delta);
+  if(VE.controls.lookVertical == false) {
+    if(VE.camera.position.z >= 1100) {
+      VE.camera.position.set(VE.camera.position.x,0-(VE.boundingBoxConfig.height/2 - 200/2),1090);
+    }
+    if(VE.camera.position.x >= 1700) {
+      VE.camera.position.set(1690,0-(VE.boundingBoxConfig.height/2 - 200/2),VE.camera.position.z);
+    }
+    if(VE.camera.position.z <= -1100) {
+      VE.camera.position.set(VE.camera.position.x,0-(VE.boundingBoxConfig.height/2 - 200/2),-1090);
+    }
+    if(VE.camera.position.x <= -1700) {
+      VE.camera.position.set(-1690,0-(VE.boundingBoxConfig.height/2 - 200/2),VE.camera.position.z);
+    }
+  }
   VE.controls.update(VE.clock.getDelta());
   VE.renderer.render(VE.scene, VE.camera);
 
