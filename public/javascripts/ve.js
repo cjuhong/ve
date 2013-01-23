@@ -33,7 +33,7 @@ VE.init = function() {
                                             ASPECT,
                                             NEAR,
                                             FAR  );
-  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
+//  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
 
 
 
@@ -69,7 +69,7 @@ VE.init = function() {
 
   var boundingBox = new THREE.Mesh(
     new THREE.CubeGeometry(
-      boundingBoxConfig.width, boundingBoxConfig.height, boundingBoxConfig.depth,
+      boundingBoxConfig.width, boundingBoxConfig.height+1, boundingBoxConfig.depth,
       boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ),
     new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } )
   );
@@ -134,6 +134,7 @@ VE.init = function() {
     document.getElementById("exhibitor_login").style.display = "none";
     $("#operation  .admin").css("display","none");
     $("#operation  .exhibitor").css("display","block");
+    VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
     VE.controls = new THREE.FirstPersonControls( VE.camera );
     VE.controls.movementSpeed = 70;
     VE.controls.lookSpeed = 0.05;
@@ -153,7 +154,7 @@ VE.init = function() {
     event.preventDefault();
     $("#operation  .admin").css("display","none");
     $("#operation  .exhibitor").css("display","none");
-
+    VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
     VE.controls = new THREE.FirstPersonControls( VE.camera );
     VE.controls.movementSpeed = 70;
     VE.controls.lookSpeed = 0.05;

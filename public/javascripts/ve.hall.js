@@ -1,5 +1,5 @@
-window.VE = window.VE  || {}; // equivalent to if(!window.VE) window.VE = {};
 
+window.VE = window.VE  || {}; // equivalent to if(!window.VE) window.VE = {};
 VE.Hall = {};
 
 VE.Hall.booths = [];
@@ -26,14 +26,14 @@ VE.Hall.generateBooths = function(boothSize) {
     x: 0,
     y: 0-(VE.boundingBoxConfig.height/2 - 200/2),
     z: 0
-  }
+  };
   if(VE.Utils.isEven(boothSize.row) && VE.Utils.isEven(boothSize.column)){
     var row = boothSize.row/2;
     var column = boothSize.column/2;
     for(var i= -column; i<column; i++) {
       box.z = 200 + i*400;
       for(var j= -row; j<row; j++) {
-        box.x = 200 + j*400
+        box.x = 200 + j*400;
         console.log(box.x);
         console.log(box.z);
         VE.Hall.booths.push(VE.Booth.create(box));
@@ -47,7 +47,7 @@ VE.Hall.generateBooths = function(boothSize) {
     for(var i= -Math.floor(column); i<Math.round(column); i++) {
       box.z = i*400;
       for(var j= -row; j<row; j++) {
-        box.x = 200 + j*400
+        box.x = 200 + j*400;
         console.log(box.x);
         console.log(box.z);
         VE.Hall.booths.push(VE.Booth.create(box));
@@ -61,7 +61,7 @@ VE.Hall.generateBooths = function(boothSize) {
     for(var i= -column; i<column; i++) {
       box.z = 200 + i*400;
       for(var j= -Math.floor(row); j<Math.round(row); j++) {
-        box.x = j*400
+        box.x = j*400;
         console.log(box.x);
         console.log(box.z);
         VE.Hall.booths.push(VE.Booth.create(box));
@@ -75,7 +75,7 @@ VE.Hall.generateBooths = function(boothSize) {
     for(var i= -Math.floor(column); i<Math.round(column); i++) {
       box.z = 200 + i*400;
       for(var j= -Math.floor(row); j<Math.round(row); j++) {
-        box.x = 200 + j*400
+        box.x = 200 + j*400;
         console.log(box.x);
         console.log(box.z);
         VE.Hall.booths.push(VE.Booth.create(box));
@@ -93,7 +93,7 @@ VE.Hall.addBoothToScene = function() {
   for(var i=0; i<booths.length; i++) {
     VE.scene.add(booths[i]);
   }
-}
+};
 
 
 VE.Hall.sprite = function() {
@@ -106,18 +106,38 @@ VE.Hall.sprite = function() {
   //sprite.position.multiplyScalar( 5 );
   VE.scene.add( sprite );
   console.log("sprite comes");
-}
+};
 
 VE.Hall.floor = function() {
-  var floorCube = new THREE.Mesh(
-    new THREE.CubeGeometry(
-      VE.boundingBoxConfig.width, 0, VE.boundingBoxConfig.depth ),
-    new THREE.MeshBasicMaterial( { color: 0xffaa00 } )
-  );
-  floorCube.position.set(0,0-VE.boundingBoxConfig.height/2,0);
-  VE.scene.add(floorCube);
-  console.log("floor added");
-}
+  /*
+   var floorTexture = new THREE.ImageUtils.loadTexture( 'textures/tile-pattern.jpg' );
+   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+   floorTexture.repeat.set( 10, 10, 10 );
+
+   var floorCube = new THREE.Mesh(
+   new THREE.CubeGeometry(
+   VE.boundingBoxConfig.width, 0, VE.boundingBoxConfig.depth ),
+   new THREE.MeshBasicMaterial( { map:floorTexture } )
+   );
+   floorCube.position.set(0,0-VE.boundingBoxConfig.height/2,0);
+   VE.scene.add(floorCube);
+   console.log("floor added");
+   */
+
+  var floorTexture = new THREE.ImageUtils.loadTexture( 'textures/floor.jpg' );
+  floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+  floorTexture.repeat.set( 30, 30 );
+  var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
+  var floorGeometry = new THREE.PlaneGeometry(VE.boundingBoxConfig.width, VE.boundingBoxConfig.depth, 1, 1);
+  var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  //floor.rotation.z = 180 * Math.PI / 180;
+  floor.rotation.set(-0.5*Math.PI,0,0);
+  floor.position.set(0,0-VE.boundingBoxConfig.height/2,0);
+  //floor.position.y = -0.5;
+  floor.doubleSided = true;
+  VE.scene.add(floor);
+
+};
 
 VE.Hall.testCode= function() {
   ///////////
@@ -127,7 +147,7 @@ VE.Hall.testCode= function() {
   // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
   var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-  floorTexture.repeat.set( 10, 10 );
+  floorTexture.repeat.set( 100, 100 );
   var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
   var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 1, 1);
   var floor = new THREE.Mesh(floorGeometry, floorMaterial);
