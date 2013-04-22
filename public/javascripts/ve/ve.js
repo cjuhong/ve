@@ -1,3 +1,6 @@
+define(function(require) {
+  // var Contact = Backbone.Model.extend({});
+  // return Contact;
 var VE = {};
 
 
@@ -300,3 +303,6 @@ VE.animate = function() {
 };
 
 window.addEventListener("load", VE.init);
+
+});
+
