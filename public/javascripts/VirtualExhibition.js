@@ -1,6 +1,9 @@
 // define(['router','SocialNetSockets'], function(router, socket) {
-define(['router'], function(router) {
+define(['router','ve/ve'], function(router,VE) {
   var initialize = function() {
+    // window.addEventListener("load", VE.init);
+    VE.init();
+    console.log("testing");
       //socket.initialize(router.socketEvents);
       //checkLogin(runApplication);
     };

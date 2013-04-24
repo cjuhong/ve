@@ -6,7 +6,7 @@ require.config({
     text: '/javascripts/libs/text',
     templates: '../templates',
     Sockets: '/socket.io/socket.io',
-    Three: '/javascripts/ve/three.min',
+    ThreeJs: '/javascripts/ve/three.min',
     FirstPersonControls: '/javascripts/ve/FirstPersonControls',
     OBJLoader: '/javascripts/ve/OBJLoader',
     AxisHelper: '/javascripts/ve/AxisHelper',
@@ -19,11 +19,11 @@ require.config({
   },
   shim: {
     'Backbone': ['Underscore', 'jQuery'],
-    'VirtualExhibition': ['Backbone'],
-    'FirstPersonControls': ['Three'],
-    'OBJLoader': ['Three'],
-    'AxisHelper':  ['Three'],
-    'CameraHelper': ['Three']
+    'FirstPersonControls': ['ThreeJs'],
+    'OBJLoader': ['ThreeJs'],
+    'AxisHelper':  ['ThreeJs'],
+    'CameraHelper': ['ThreeJs'],
+    'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper']
   }
 });
 require(['VirtualExhibition'], function(VirtualExhibition) {
