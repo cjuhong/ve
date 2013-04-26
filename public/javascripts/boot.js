@@ -3,6 +3,7 @@ require.config({
     jQuery: '/javascripts/libs/jquery',
     Underscore: '/javascripts/libs/underscore',
     Backbone: '/javascripts/libs/backbone',
+    Sly: '/javascripts/libs/sly.min',
     text: '/javascripts/libs/text',
     templates: '../templates',
     Sockets: '/socket.io/socket.io',
@@ -18,12 +19,13 @@ require.config({
     stats: '/javascripts/ve/stats.min'
   },
   shim: {
+    'Sly': ['jQuery'],
     'Backbone': ['Underscore', 'jQuery'],
     'FirstPersonControls': ['ThreeJs'],
     'OBJLoader': ['ThreeJs'],
     'AxisHelper':  ['ThreeJs'],
     'CameraHelper': ['ThreeJs'],
-    'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper']
+    'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper','Sly']
   }
 });
 require(['VirtualExhibition'], function(VirtualExhibition) {

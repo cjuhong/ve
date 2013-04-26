@@ -1,6 +1,7 @@
-define(function(require) {
+define(['views/message','NavigationSly'],function(Message,NavigationSly) {
   var VE = {};
-
+  VE.Message = new Message();
+  // VE.NavigationSly = NavigationSly;
   VE.init = function() {
     // set the scene size
     var WIDTH = window.innerWidth,
@@ -78,7 +79,7 @@ define(function(require) {
     VE.controls.noFly = true;
     VE.controls.lookVertical = true;
 
-    VE.start();
+    // VE.start();
 
   };
 
