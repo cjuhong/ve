@@ -3,10 +3,9 @@ define(['router','ve/ve'], function(router,VE) {
   var initialize = function() {
     // window.addEventListener("load", VE.init);
     // VE.init();
-    // VE.Message.render();
+    VE.Message.render();
     // VE.NavigationSly.activate(0);
     // VE.NavigationSly.reload();
-    console.log("testing");
       //socket.initialize(router.socketEvents);
       //checkLogin(runApplication);
     };

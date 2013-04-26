@@ -1,7 +1,7 @@
 define(['views/navigation'], function(Navigation) {
 	var navigation = new Navigation();
 	navigation.render();
-	var $NavigationSly = $('#basic').sly({
+	var NavigationSly = new Sly('#basic',{
 		horizontal: 1,
 		itemNav: 'basic',
 		smart: 1,
@@ -9,14 +9,15 @@ define(['views/navigation'], function(Navigation) {
 		mouseDragging: 1,
 		touchDragging: 1,
 		releaseSwing: 1,
-		startAt: 14,
+		startAt: 13,
 		scrollBy: 1,
 		activatePageOn: 'click',
 		speed: 300,
 		elasticBounds: 1,
 		dragHandle: 1,
 		dynamicHandle: 1,
-		clickBar: 1,
-	}).init();
-
+		clickBar: 1
+	});
+	NavigationSly.init();
+	return NavigationSly;
 });

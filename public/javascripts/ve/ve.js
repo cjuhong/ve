@@ -1,6 +1,6 @@
 define(['views/message','NavigationSly'],function(Message,NavigationSly) {
   var VE = {};
-  VE.Message = new Message();
+  VE.Message = new Message({navigationSly:NavigationSly});
   // VE.NavigationSly = NavigationSly;
   VE.init = function() {
     // set the scene size
