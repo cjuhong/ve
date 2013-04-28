@@ -1,7 +1,7 @@
-define(['VeView', 'models/Contact', 'views/contact',
+define(['NavigationSly','VeView', 'models/Contact', 'views/contact',
 	'text!templates/addcontact.html'],
 
-function(VeView, Contact, ContactView, addcontactTemplate) {
+function(NavigationSly,VeView, Contact, ContactView, addcontactTemplate) {
 	var addcontactView = VeView.extend({
 		el: $('#interacts'),
 		events: {
@@ -20,8 +20,8 @@ function(VeView, Contact, ContactView, addcontactTemplate) {
 			return false;
 		},
 		initialize: function(options) {
-			// this.navigationSly = options.navigationSly;
-			console.log(options);
+			this.navigationSly = NavigationSly;
+			// console.log(NavigationSly);
 		},
 		render: function(resultList) {
 			var view = this;
