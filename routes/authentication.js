@@ -19,7 +19,8 @@ module.exports = function(app, models) {
 			console.log('login was successful');
 			req.session.loggedIn = true;
 			req.session.accountId = account._id;
-			res.send(account._id);
+			req.session.role = account.role;
+			res.send({id:account._id,role:account.role});
 		});
 	});
 
@@ -28,11 +29,12 @@ module.exports = function(app, models) {
 		var lastName = req.param('lastName', '');
 		var email = req.param('email', null);
 		var password = req.param('password', null);
+		var role = req.param('role', null);
 		if (null == email || null == password) {
 			res.send(400);
 			return;
 		}
-		models.Account.register(email, password, firstName, lastName);
+		models.Account.register(email, password, firstName, lastName,role);
 		res.send(200);
 	});
 
@@ -42,6 +44,17 @@ module.exports = function(app, models) {
 		} else {
 			res.send(401);
 		}
+	});
+
+	app.get('/account/logout', function(req, res) {
+		// if (req.session && req.session.loggedIn) {
+		// 	res.send(req.session.accountId);
+		// } else {
+		// 	res.send(401);
+		// }
+		req.session.loggedIn = false;
+		res.send(200);
+		console.log("logout: "+req.session.accountId);
 	});
 
 	app.post('/forgotpassword', function(req, res) {

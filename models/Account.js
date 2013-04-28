@@ -62,6 +62,9 @@ module.exports = function(app, config, mongoose, nodemailer) {
         type: String
       }
     },
+    role: {
+      type: String
+    },
     birthday: {
       day: {
         type: Number,
@@ -210,7 +213,7 @@ module.exports = function(app, config, mongoose, nodemailer) {
     };
     return false;
   };
-  var register = function(email, password, firstName, lastName) {
+  var register = function(email, password, firstName, lastName,role) {
     var shaSum = crypto.createHash('sha256');
     shaSum.update(password);
     console.log('Registering ' + email);
@@ -221,6 +224,7 @@ module.exports = function(app, config, mongoose, nodemailer) {
         last: lastName,
         full: firstName + ' ' + lastName
       },
+      role: role,
       password: shaSum.digest('hex')
     });
     user.save(registerCallback);

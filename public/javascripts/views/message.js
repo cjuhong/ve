@@ -1,36 +1,20 @@
-define(['VeView', 'text!templates/message.html'], function(VeView, messageTemplate) {
+define(['VeView', 'text!templates/message.html','views/login'], function(VeView, messageTemplate,LoginView) {
 	var MessageView = VeView.extend({
-		el: $('#message'),
+		el: $('#interacts'),
 		initialize: function(options) {
 			that = this;
 			this.navigationSly = options.navigationSly;
-			this.navigationSly.on('active',function(event,index){
-				console.log(index);
-				console.log(event);
-				that.vistor();
-			});
 		},
 		events: {
-			"click #enter": "navigationTo",
-			"click #vistor": "vistor",
-			"click #exhibitor": "exhibitor",
-			"click #organizer": "organizer",
-		},
-		vistor: function() {
-			console.log("test");
-		},
-		exhibitor: function() {
-			console.log("test");
-		},
-		organizer: function() {
-			console.log("test");
+			"click #enter": "navigationTo"
 		},
 		navigationTo: function() {
-			$('#message').hide();
+			$('#interacts').fadeOut();
+			// this.navigationSly.init();
 			this.navigationSly.slideTo(0);
 		},
 		render: function() {
-			this.$el.html(messageTemplate);
+			this.$el.html(messageTemplate).fadeIn();
 		}
 	});
 

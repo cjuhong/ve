@@ -1,6 +1,6 @@
 define(['views/message','NavigationSly'],function(Message,NavigationSly) {
   var VE = {};
-  VE.Message = new Message({navigationSly:NavigationSly});
+  // VE.Message = new Message({navigationSly:NavigationSly});
   // VE.NavigationSly = NavigationSly;
   VE.init = function() {
     // set the scene size
@@ -36,6 +36,7 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     ASPECT,
     NEAR,
     FAR);
+    VE.camera.position.set(0,-155,-1000);
     //  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
 
     VE.scene = new THREE.Scene();
@@ -77,9 +78,9 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     VE.controls.movementSpeed = 70;
     VE.controls.lookSpeed = 0.05;
     VE.controls.noFly = true;
-    VE.controls.lookVertical = true;
+    VE.controls.lookVertical = false;
 
-    // VE.start();
+    VE.start();
 
   };
 
