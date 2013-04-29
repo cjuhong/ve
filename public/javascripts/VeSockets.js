@@ -1,7 +1,7 @@
 define(['Sockets', 'models/ContactCollection', 'views/chat'],
 
 function(sio, ContactCollection, ChatView) {
-	var SocialNetSockets = function(eventDispatcher) {
+	var VeSockets = function(eventDispatcher) {
 		var socket = null;
 		var accountId = null;
 		var connectSocket = function(socketAccountId) {
@@ -51,7 +51,7 @@ function(sio, ContactCollection, ChatView) {
 	
 	return {
 		initialize: function(eventDispatcher) {
-			SocialNetSockets(eventDispatcher);
+			VeSockets(eventDispatcher);
 		}
 	};
 });

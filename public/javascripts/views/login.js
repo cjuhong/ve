@@ -7,14 +7,14 @@ define(['VeView', 'text!templates/login.html'], function(VeView, loginTemplate) 
 		},
 
 		login: function() {
-			// var socketEvents = this.socketEvents;
+			var socketEvents = this.socketEvents;
 			var that = this;
 			$.post('/login',
 				this.$('form').serialize(), function(data) {
 					console.log(data.id+ " " + data.role + " logging");
 					sessionStorage.role = data.role;
 					sessionStorage.userId = data.id;
-					// socketEvents.trigger('app:loggedin');
+					socketEvents.trigger('app:loggedin');
 					$('#logout').fadeIn();
 					$('#search').fadeIn();
 					$('#contacts').fadeIn();

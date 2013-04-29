@@ -1,7 +1,7 @@
-define(['SocialNetView', 'text!templates/chatsession.html'],
+define(['VeView', 'text!templates/chatsession.html'],
 
-function(SocialNetView, chatItemTemplate) {
-	var chatItemView = SocialNetView.extend({
+function(VeView, chatItemTemplate) {
+	var chatItemView = VeView.extend({
 		tagName: 'div',
 		className: 'chat_session',
 		$el: $(this.el),

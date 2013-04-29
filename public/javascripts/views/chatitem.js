@@ -1,7 +1,7 @@
-define(['SocialNetView', 'text!templates/chatitem.html'],
+define(['VeView', 'text!templates/chatitem.html'],
 
-function(SocialNetView, chatItemTemplate) {
-	var chatItemView = SocialNetView.extend({
+function(VeView, chatItemTemplate) {
+	var chatItemView = VeView.extend({
 		tagName: 'li',
 		$el: $(this.el),
 		events: {

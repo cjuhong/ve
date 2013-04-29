@@ -1,8 +1,9 @@
 // define(['router','SocialNetSockets'], function(router, socket) {
-define(['router','ve/ve','NavigationSly','models/ContactCollection'], function(router,VE,NavigationSly,ContactCollection) {
+define(['router','ve/ve','NavigationSly','models/ContactCollection','VeSockets'], 
+  function(router,VE,NavigationSly,ContactCollection,Socket) {
   var initialize = function() {
     // VE.init();
-      //socket.initialize(router.socketEvents);
+    Socket.initialize(router.socketEvents);
     checkLogin(runApplication);
     };
   var contactsCollection = new ContactCollection();

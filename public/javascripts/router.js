@@ -36,6 +36,7 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
         break;
 			default:
 				console.log("default");
+        break;
 		}
 	});
   var SocialRouter = Backbone.Router.extend({
