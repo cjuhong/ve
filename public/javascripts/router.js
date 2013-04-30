@@ -36,6 +36,22 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
         break;
 			default:
 				console.log("default");
+        $('.chatting:first').removeClass('chatting');
+        var contactElement = $('.contact.active:first');
+        var classId = contactElement.attr('id');
+        console.log(classId);
+        var sessionLength = $('#talk div.'+classId).length;
+        if( sessionLength < 1){
+          $('<div class='+classId+' />').addClass('chatting').appendTo('#talk');
+        }else{
+          $('.'+classId+':first').addClass('chatting');
+        }
+        // ele.append('<div class=talk>hhhhh</div>');
+        // ele.append('<div class=talk>hhhhhherwerweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</div>');
+        // ele.css('overflow','visible ');
+        // ele.children('div').each(function(){
+        //   $(this).css("float","left").css("display","block").css("position","absolute").css("list-style","none").css("top","100px").css("left","100px").fadeIn();
+        // });
         break;
 		}
 	});
