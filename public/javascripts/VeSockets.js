@@ -13,7 +13,7 @@ function(sio, ContactCollection, ChatView) {
 				eventDispatcher.bind('socket:chat', sendChat);
 
 				socket.on('chatserver', function(data) {
-					eventDispatcher.trigger('socket:chat:start:' + data.from);
+					eventDispatcher.trigger('socket:chat:start', data);
 					eventDispatcher.trigger('socket:chat:in:' + data.from, data);
 				});
 

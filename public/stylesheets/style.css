@@ -32,3 +32,33 @@ body {margin: 0; padding: 0; overflow: hidden;}
 #contacts {
     display: none;
 }
+
+#talk div
+{
+    display: none;
+}
+
+#talk div.chatting
+{
+    position:absolute;
+    right:0;
+    bottom:0;
+    display: block;
+    border-style:solid;
+    border-width:1px;
+}
+
+#talk div.chatting ul.chat_log{
+    height: 200px;
+    width: 200px;
+    overflow: auto;
+}
+
+ul.chat_log li{
+    word-wrap: break-word;
+}
+
+ul.chat_log li:nth-child(odd)
+{
+    background-color:#80ccff;
+}

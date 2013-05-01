@@ -7,56 +7,15 @@
 // ContactsView, AddContactView, Account, StatusCollection,
 // ContactCollection) {
 
-define(['models/ContactCollection','views/contacts','views/addcontact','views/register','views/login','views/message','NavigationSly'],
 
-function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Message,NavigationSly) {
-	var navigationSly = NavigationSly;
-	navigationSly.on('active',function(event,index){
-		switch(index) {
-			case 0:
-				window.location.hash = 'vistor';
-				break;
-			case 1:
-				window.location.hash = 'exhibitor';
-				break;
-			case 2:
-				window.location.hash = 'organizer';
-				break;
-			case 3:
-				window.location.hash = 'register';
-				break;
-			case 4:
-				window.location.hash = 'logout';
-				break;
-      case 5:
-        window.location.hash = 'addContact';
-        break;
-      case 6:
-        window.location.hash = 'contacts/me';
-        break;
-			default:
-				console.log("default");
-        $('.chatting:first').removeClass('chatting');
-        var contactElement = $('.contact.active:first');
-        var classId = contactElement.attr('id');
-        console.log(classId);
-        var sessionLength = $('#talk div.'+classId).length;
-        if( sessionLength < 1){
-          $('<div class='+classId+' />').addClass('chatting').appendTo('#talk');
-        }else{
-          $('.'+classId+':first').addClass('chatting');
-        }
-        // ele.append('<div class=talk>hhhhh</div>');
-        // ele.append('<div class=talk>hhhhhherwerweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</div>');
-        // ele.css('overflow','visible ');
-        // ele.children('div').each(function(){
-        //   $(this).css("float","left").css("display","block").css("position","absolute").css("list-style","none").css("top","100px").css("left","100px").fadeIn();
-        // });
-        break;
-		}
-	});
+
+
+define(['models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
+
+function(Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
   var SocialRouter = Backbone.Router.extend({
     currentView: null,
+    sessionGroup: {},
     navigationSly: NavigationSly,
     socketEvents: _.extend({}, Backbone.Events),
     routes: {
@@ -75,26 +34,89 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
       'addContact': 'addContact',
       'manageContacts': 'manageContacts'
     },
-    checkLogin: function(callback) {
-        $.ajax("/account/authenticated", {
-          method: "GET",
-          success: function(data) {
-            // router.socketEvents.trigger('app:loggedin', data);
-            return callback(true);
-          },
-          error: function(data) {
-            return callback(false);
-          }
-        });
-      },
-    runApplication:function(authenticated) {
-        if(!authenticated) {
-          window.location.hash = 'login';
-        } else {
-          window.location.hash = 'index';
+    initialize: function(options) {
+      var that = this;
+      that.socketEvents.bind('socket:chat:start',that.sessionStart,that);
+      this.navigationSly.on('active', function(event, index) {
+        switch (index) {
+          case 0:
+            window.location.hash = 'vistor';
+            break;
+          case 1:
+            window.location.hash = 'exhibitor';
+            break;
+          case 2:
+            window.location.hash = 'organizer';
+            break;
+          case 3:
+            window.location.hash = 'register';
+            break;
+          case 4:
+            window.location.hash = 'logout';
+            break;
+          case 5:
+            window.location.hash = 'addContact';
+            break;
+          case 6:
+            window.location.hash = 'contacts/me';
+            break;
+          default:
+            // that.navigationSly.slideTo(index);
+            console.log("default");
+            // $('.chatting:first').removeClass('chatting');
+            var contactElement = $('.contact.active:first');
+            contactElement.css("background-color",'#333');
+            var sessionClass = contactElement.attr('id');
+            var contactName = contactElement.text();
+            if(!that.sessionGroup[sessionClass]){
+              var contact = new Contact();
+              contact.set({accountId:sessionClass,name:contactName});
+              var talkView = new TalkView({sessionClass:sessionClass, socketEvents:that.socketEvents,model:contact});
+              talkView.render();
+              that.sessionGroup[sessionClass] = true;
+            }
+            that.socketEvents.trigger('stopTalking');
+            that.socketEvents.trigger(sessionClass);
+            break;
         }
-        // Backbone.history.start();
-      },
+      });
+    },
+    sessionStart: function(data){
+      console.log('session starting xxx');
+      var that = this;
+      var contactElement = $('#'+data.from);
+      contactElement.css("background-color",'#00FF00');
+      // var sessionClass = contactElement.attr('id');
+      var contactName = contactElement.text();
+      console.log(contactName);
+      if(!that.sessionGroup[data.from]){
+        var contact = new Contact();
+        contact.set({accountId:data.from,name:contactName});
+        var talkView = new TalkView({sessionClass:data.from, socketEvents:that.socketEvents,model:contact});
+        talkView.render();
+        that.sessionGroup[data.from] = true;
+      }
+    },
+    checkLogin: function(callback) {
+      $.ajax("/account/authenticated", {
+        method: "GET",
+        success: function(data) {
+          // router.socketEvents.trigger('app:loggedin', data);
+          return callback(true);
+        },
+        error: function(data) {
+          return callback(false);
+        }
+      });
+    },
+    runApplication: function(authenticated) {
+      if (!authenticated) {
+        window.location.hash = 'login';
+      } else {
+        window.location.hash = 'index';
+      }
+      // Backbone.history.start();
+    },
     changeView: function(view) {
       if (null != this.currentView) {
         this.currentView.undelegateEvents();
@@ -126,10 +148,16 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
     },
     addContact: function() {
       var that = this;
-      this.changeView(new AddContactView({navigationSly : that.navigationSly}));
+      this.changeView(new AddContactView({
+        navigationSly: that.navigationSly
+      }));
     },
     login: function() {
-      this.changeView(new LoginView({socketEvents : this.socketEvents, navigationSly : this.navigationSly, contactsCollection: new ContactCollection()}));
+      this.changeView(new LoginView({
+        socketEvents: this.socketEvents,
+        navigationSly: this.navigationSly,
+        contactsCollection: new ContactCollection()
+      }));
 
       console.log("login");
     },
@@ -138,11 +166,11 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
       $.ajax("/account/logout", {
         method: "GET",
         success: function(data) {
-        	console.log("logout");
-        	delete sessionStorage.role;
-        	delete sessionStorage.userId;
-        	window.location.reload();
-        	return callback(true);
+          console.log("logout");
+          delete sessionStorage.role;
+          delete sessionStorage.userId;
+          window.location.reload();
+          return callback(true);
         },
         error: function(data) {
           return callback(false);
@@ -150,10 +178,12 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
       });
     },
     message: function() {
-    	new Message({navigationSly:this.navigationSly}).render();
+      new Message({
+        navigationSly: this.navigationSly
+      }).render();
     },
     vistor: function() {
-    	// var that = this;
+      // var that = this;
       // this.changeView(new LoginView({socketEvents : this.socketEvents}));
       // new Message({navigationSly:that.navigationSly}).render();
       this.checkLogin(this.runApplication);
@@ -189,7 +219,7 @@ function(ContactCollection,ContactsView,AddContactView,RegisterView,LoginView,Me
       });
       this.changeView(new ProfileView({
         model: model,
-        socketEvents:this.socketEvents
+        socketEvents: this.socketEvents
       }));
       model.fetch();
     },
