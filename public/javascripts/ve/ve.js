@@ -15,9 +15,9 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     VE.boothSize = {};
 
     VE.boundingBoxConfig = {
-      width: 3600,
-      height: 360,
-      depth: 2400,
+      width: 5500,
+      height: 720,
+      depth: 4000,
       splitX: 60,
       splitY: 6,
       splitZ: 40
@@ -36,7 +36,7 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     ASPECT,
     NEAR,
     FAR);
-    VE.camera.position.set(0,-155,-1000);
+    VE.camera.position.set(0,-330,-1000);
     //  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
 
     VE.scene = new THREE.Scene();
@@ -106,20 +106,20 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
 
   VE.animate = function() {
     //controls.update(delta);
-    if (VE.controls.lookVertical == false) {
-      if (VE.camera.position.z >= 1100) {
-        VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), 1090);
-      }
-      if (VE.camera.position.x >= 1700) {
-        VE.camera.position.set(1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
-      }
-      if (VE.camera.position.z <= -1100) {
-        VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), -1090);
-      }
-      if (VE.camera.position.x <= -1700) {
-        VE.camera.position.set(-1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
-      }
-    }
+    // if (VE.controls.lookVertical == false) {
+    //   if (VE.camera.position.z >= 1100) {
+    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), 1090);
+    //   }
+    //   if (VE.camera.position.x >= 1700) {
+    //     VE.camera.position.set(1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
+    //   }
+    //   if (VE.camera.position.z <= -1100) {
+    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), -1090);
+    //   }
+    //   if (VE.camera.position.x <= -1700) {
+    //     VE.camera.position.set(-1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
+    //   }
+    // }
     VE.controls.update(VE.clock.getDelta());
     VE.renderer.render(VE.scene, VE.camera);
 

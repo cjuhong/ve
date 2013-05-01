@@ -2,7 +2,6 @@
 define(['router','ve/ve','NavigationSly','models/ContactCollection','VeSockets'], 
   function(router,VE,NavigationSly,ContactCollection,Socket) {
   var initialize = function() {
-    // VE.init();
     Socket.initialize(router.socketEvents);
     checkLogin(runApplication);
     };
@@ -12,6 +11,9 @@ define(['router','ve/ve','NavigationSly','models/ContactCollection','VeSockets']
         method: "GET",
         success: function(data) {
           // router.socketEvents.trigger('app:loggedin', data);
+          /************************Init VE *******************/
+          VE.init();
+          /************************End Init VE *******************/
           $('#logout').fadeIn();
           $('#search').fadeIn();
           $('#register').fadeOut();
