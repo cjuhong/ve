@@ -10,9 +10,9 @@
 
 
 
-define(['models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
+define(['views/index','models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
 
-function(Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
+function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
   var SocialRouter = Backbone.Router.extend({
     currentView: null,
     sessionGroup: {},
@@ -127,10 +127,7 @@ function(Contact,TalkView, ContactCollection, ContactsView, AddContactView, Regi
     index: function() {
       // var statusCollection = new StatusCollection();
       // statusCollection.url = '/accounts/me/activity';
-      // this.changeView(new IndexView({
-      //   collection: statusCollection,
-      //   socketEvents:this.socketEvents
-      // }));
+      this.changeView(new IndexView());
       // statusCollection.fetch();
       $.ajax("/account/authenticated", {
         method: "GET",

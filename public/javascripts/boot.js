@@ -16,16 +16,18 @@ require.config({
     Detector: '/javascripts/ve/Detector',
     cufon_yui: '/javascripts/ve/cufon-yui',
     dat_gui: '/javascripts/ve/dat.gui.min',
-    stats: '/javascripts/ve/stats.min'
+    stats: '/javascripts/ve/stats.min',
+    physi: '/javascripts/libs/physijs/physi'
   },
   shim: {
     'Sly': ['jQuery'],
     'Backbone': ['Underscore', 'jQuery'],
     'FirstPersonControls': ['ThreeJs'],
     'OBJLoader': ['ThreeJs'],
+    'physi': ['ThreeJs'],
     'AxisHelper':  ['ThreeJs'],
     'CameraHelper': ['ThreeJs'],
-    'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper','Sly']
+    'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper','Sly','physi']
   }
 });
 require(['VirtualExhibition'], function(VirtualExhibition) {

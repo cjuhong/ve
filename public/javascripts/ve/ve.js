@@ -1,4 +1,7 @@
-define(['views/message','NavigationSly'],function(Message,NavigationSly) {
+define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
+  'use strict';
+  Physijs.scripts.worker = '/javascripts/libs/physijs/physijs_worker.js';
+  Physijs.scripts.ammo = '/javascripts/libs/physijs/ammo.js';
   var VE = {};
   // VE.Message = new Message({navigationSly:NavigationSly});
   // VE.NavigationSly = NavigationSly;
@@ -14,7 +17,7 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
       FAR = 10000;
     VE.boothSize = {};
 
-    VE.boundingBoxConfig = {
+    VE.HallConfig = {
       width: 5500,
       height: 720,
       depth: 4000,
@@ -23,7 +26,7 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
       splitZ: 40
     };
 
-    var boundingBoxConfig = VE.boundingBoxConfig;
+    var HallConfig = VE.HallConfig;
 
     VE.clock = new THREE.Clock();
     VE.controls = undefined;
@@ -36,11 +39,19 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     ASPECT,
     NEAR,
     FAR);
-    VE.camera.position.set(0,-330,-1000);
-    //  VE.camera.position.set(0,0-(VE.boundingBoxConfig.height/2 - 200/2),500);
+    VE.camera.position.set(0, -300, -1000);
 
-    VE.scene = new THREE.Scene();
+    //  VE.camera.position.set(0,0-(VE.HallConfig.height/2 - 200/2),500);
 
+    VE.scene = new Physijs.Scene();
+    VE.camera.lookAt( VE.scene.position );
+
+    VE.box = new Physijs.BoxMesh(
+          new THREE.CubeGeometry( 500, 500, 500 ),
+          new THREE.MeshBasicMaterial({ color: 0x888888 })
+        );
+
+    VE.scene.add(VE.box);
     //  VE.scene.fog = new THREE.Fog( 0xffffff, 1500, 2100 );
     VE.scene.add(VE.camera);
 
@@ -58,13 +69,13 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
 
     // configuration object
 
-    VE.boundingBoxConfig = boundingBoxConfig;
-    VE.blockSize = boundingBoxConfig.width / boundingBoxConfig.splitX;
+    VE.HallConfig = HallConfig;
+    VE.blockSize = HallConfig.width / HallConfig.splitX;
 
     var boundingBox = new THREE.Mesh(
     new THREE.CubeGeometry(
-    boundingBoxConfig.width, boundingBoxConfig.height + 1, boundingBoxConfig.depth,
-    boundingBoxConfig.splitX, boundingBoxConfig.splitY, boundingBoxConfig.splitZ),
+    HallConfig.width, HallConfig.height + 1, HallConfig.depth,
+    HallConfig.splitX, HallConfig.splitY, HallConfig.splitZ),
     new THREE.MeshBasicMaterial({
       color: 0xffaa00,
       wireframe: true
@@ -78,7 +89,7 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     VE.controls.movementSpeed = 70;
     VE.controls.lookSpeed = 0.05;
     VE.controls.noFly = true;
-    VE.controls.lookVertical = false;
+    VE.controls.lookVertical = true;
 
     VE.start();
 
@@ -108,18 +119,19 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
     //controls.update(delta);
     // if (VE.controls.lookVertical == false) {
     //   if (VE.camera.position.z >= 1100) {
-    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), 1090);
+    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.HallConfig.height / 2 - 200 / 2), 1090);
     //   }
     //   if (VE.camera.position.x >= 1700) {
-    //     VE.camera.position.set(1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
+    //     VE.camera.position.set(1690, 0 - (VE.HallConfig.height / 2 - 200 / 2), VE.camera.position.z);
     //   }
     //   if (VE.camera.position.z <= -1100) {
-    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), -1090);
+    //     VE.camera.position.set(VE.camera.position.x, 0 - (VE.HallConfig.height / 2 - 200 / 2), -1090);
     //   }
     //   if (VE.camera.position.x <= -1700) {
-    //     VE.camera.position.set(-1690, 0 - (VE.boundingBoxConfig.height / 2 - 200 / 2), VE.camera.position.z);
+    //     VE.camera.position.set(-1690, 0 - (VE.HallConfig.height / 2 - 200 / 2), VE.camera.position.z);
     //   }
     // }
+    VE.scene.simulate();
     VE.controls.update(VE.clock.getDelta());
     VE.renderer.render(VE.scene, VE.camera);
 
@@ -127,4 +139,5 @@ define(['views/message','NavigationSly'],function(Message,NavigationSly) {
   };
 
   return VE;
+  // VE.init();
 });

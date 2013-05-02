@@ -1,6 +1,6 @@
 // define(['router','SocialNetSockets'], function(router, socket) {
-define(['router','ve/ve','NavigationSly','models/ContactCollection','VeSockets'], 
-  function(router,VE,NavigationSly,ContactCollection,Socket) {
+define(['router','NavigationSly','models/ContactCollection','VeSockets'], 
+  function(router,NavigationSly,ContactCollection,Socket) {
   var initialize = function() {
     Socket.initialize(router.socketEvents);
     checkLogin(runApplication);
@@ -10,10 +10,7 @@ define(['router','ve/ve','NavigationSly','models/ContactCollection','VeSockets']
       $.ajax("/account/authenticated", {
         method: "GET",
         success: function(data) {
-          // router.socketEvents.trigger('app:loggedin', data);
-          /************************Init VE *******************/
-          VE.init();
-          /************************End Init VE *******************/
+          // router.socketEvents.trigger('VEStart', data);
           $('#logout').fadeIn();
           $('#search').fadeIn();
           $('#register').fadeOut();
