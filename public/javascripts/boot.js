@@ -31,5 +31,7 @@ require.config({
   }
 });
 require(['VirtualExhibition'], function(VirtualExhibition) {
-  VirtualExhibition.initialize();
+    Physijs.scripts.worker = '/javascripts/libs/physijs/physijs_worker.js';
+    Physijs.scripts.ammo = '/javascripts/libs/physijs/ammo.js';
+    VirtualExhibition.initialize();
 });
