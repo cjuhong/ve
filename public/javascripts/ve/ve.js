@@ -8,6 +8,12 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
   VE.ground = Ground;
   VE.ceiling = Ceiling;
   VE.walls = Walls;
+  VE.globals = {};
+  VE.globals.selected_block = null;
+  VE.globals.block_offset = new THREE.Vector3; 
+  VE.globals.mouse_position = new THREE.Vector3;
+  VE.globals._v3 = new THREE.Vector3;
+  VE.blocks = [];
   // VE.Message = new Message({navigationSly:NavigationSly});
   // VE.NavigationSly = NavigationSly;
   VE.init = function() {
@@ -40,11 +46,21 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
     VE.renderer = new THREE.WebGLRenderer({
       antialias: true
     });
+    // VE.renderer.shadowMapEnabled = true;
+    // VE.renderer.shadowMapType = THREE.PCFShadowMap;
+    // VE.renderer.shadowMapEnabled = true;
+    // VE.renderer.shadowMapSoft = true;
     VE.camera = new THREE.PerspectiveCamera(VIEW_ANGLE,
     ASPECT,
     NEAR,
     FAR);
-    VE.camera.position.set(-2740, -300, -1990);
+
+
+
+    // VE.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 500, 1000 );
+
+    // VE.camera.position.set(2740, -300, 1990);
+    VE.camera.position.set(600, -300, 600);
 
     //  VE.camera.position.set(0,0-(VE.HallConfig.height/2 - 200/2),500);
 
@@ -55,15 +71,36 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
 
     function() {
       // console.log('message: updating');
+      if ( VE.globals.selected_block !== null ) {
+        
+        VE.globals._v3.copy( VE.globals.mouse_position ).add( VE.globals.block_offset ).sub( VE.globals.selected_block.position ).multiplyScalar( 15 );
+        VE.globals._v3.y = 0;
+        // selected_block.setLinearVelocity( _v3 );
+        VE.globals.selected_block.setLinearVelocity( VE.globals._v3 );
+        
+        // Reactivate all of the blocks
+        // _v3.set( 0, 0, 0 );
+        // for ( _i = 0; _i < blocks.length; _i++ ) {
+        //  blocks[_i].applyCentralImpulse( _v3 );
+        // }
+      }
       VE.scene.simulate(undefined, 1);
     });
     VE.camera.lookAt(VE.scene.position);
 
+    VE.intersect_plane = new THREE.Mesh(
+      new THREE.PlaneGeometry( 5500, 4000 ),
+      new THREE.MeshBasicMaterial({ opacity: 0, transparent: true, color: 0x8ef877 })
+    );
+    // console.log(VE.intersect_plane instanceof Physijs.BoxMesh);
+    VE.intersect_plane.rotation.x = Math.PI / -2;
+    // VE.intersect_plane.position.y = -300;
+    console.log(VE.intersect_plane.position);
+    VE.scene.add( VE.intersect_plane );
 
 
     VE.scene.add(VE.ground);
     VE.scene.add(VE.ceiling);
-    VE.scene.add(VE.walls);
     for (var i = 0; i < VE.walls.length; i++) {
       VE.scene.add(VE.walls[i]);
     }
@@ -105,14 +142,24 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
       color: 0x888888
     }));
     VE.scene.add(box);
+    VE.blocks.push(box);
+    var box_two = new Physijs.BoxMesh(
+    new THREE.CubeGeometry(500, 50, 500),
+    new THREE.MeshBasicMaterial({
+      color: 0x88ff88
+    }));
+    box_two.position.y = 100;
+    VE.scene.add(box_two);
+    VE.blocks.push(box_two);
 
+    VE.initEventHandling();
     // first render
     VE.renderer.render(VE.scene, VE.camera);
 
     VE.controls = new THREE.FirstPersonControls(VE.camera);
     VE.controls.movementSpeed = 70;
     VE.controls.noFly = true;
-    VE.controls.lookVertical = false;
+    VE.controls.lookVertical = true;
 
     // console.log(VE.controls);
     VE.start();
@@ -160,6 +207,94 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
 
     if (!VE.over) window.requestAnimationFrame(VE.animate);
   };
+
+  VE.initEventHandling = (function() {
+    var _vector = new THREE.Vector3,
+      projector = new THREE.Projector(),
+      handleMouseDown, handleMouseMove, handleMouseUp;
+    
+    handleMouseDown = function( evt ) {
+      var ray, intersections;
+      // console.log(evt);
+      // console.log(_vector);
+      switch ( event.button ) {
+        case 0:
+      _vector.set(
+        ( evt.clientX / window.innerWidth ) * 2 - 1,
+        -( evt.clientY / window.innerHeight ) * 2 + 1,
+        1
+      );
+      // console.log(_vector);
+      // console.log(VE.camera.position);
+      projector.unprojectVector( _vector, VE.camera );
+      // console.log(_vector);
+      ray = new THREE.Raycaster( VE.camera.position, _vector.sub( VE.camera.position ).normalize() );
+      intersections = ray.intersectObjects(VE.blocks);
+      // console.log(intersections);
+      if ( intersections.length > 0 ) {
+        if(intersections[0].object instanceof Physijs.BoxMesh){
+        VE.globals.selected_block = intersections[0].object;
+        // VE.camera.lookAt(VE.globals.selected_block.position);
+
+        console.log("Physijs.BoxMesh");
+        _vector.set( 0, 0, 0 );
+        VE.globals.selected_block.setAngularFactor( _vector );
+        VE.globals.selected_block.setAngularVelocity( _vector );
+        VE.globals.selected_block.setLinearFactor( _vector );
+        VE.globals.selected_block.setLinearVelocity( _vector );
+        // console.log(intersections[0].point);
+        VE.globals.mouse_position.copy( intersections[0].point );
+        // console.log(mouse_position);
+        // console.log(selected_block.position);
+        VE.globals.block_offset.subVectors( VE.globals.selected_block.position, VE.globals.mouse_position );
+        
+        VE.intersect_plane.position.y = VE.globals.mouse_position.y-10;
+      }
+      }
+      break;
+    }
+    };
+    
+    handleMouseMove = function( evt ) {
+      
+      var ray, intersection,
+        i, scalar;
+
+      if ( VE.globals.selected_block !== null ) {
+        
+        _vector.set(
+          ( evt.clientX / window.innerWidth ) * 2 - 1,
+          -( evt.clientY / window.innerHeight ) * 2 + 1,
+          -100
+        );
+        // console.log(_vector);
+        projector.unprojectVector( _vector, VE.camera );
+        // console.log(VE.camera.position);
+        ray = new THREE.Raycaster( VE.camera.position, _vector.sub( VE.camera.position ).normalize() );
+        intersection = ray.intersectObject( VE.intersect_plane );
+        VE.globals.mouse_position.copy( intersection[0].point );
+      }
+      
+    };
+    
+    handleMouseUp = function( evt ) {
+      
+      if ( VE.globals.selected_block !== null ) {
+        _vector.set( 1, 1, 1 );
+        VE.globals.selected_block.setAngularFactor( _vector );
+        VE.globals.selected_block.setLinearFactor( _vector );
+        
+        VE.globals.selected_block = null;
+      }
+      
+    };
+    
+    return function() {
+      VE.renderer.domElement.addEventListener( 'mousedown', handleMouseDown );
+      VE.renderer.domElement.addEventListener( 'mousemove', handleMouseMove );
+      VE.renderer.domElement.addEventListener( 'mouseup', handleMouseUp );
+    };
+  })();
 
   return VE;
   // VE.init();

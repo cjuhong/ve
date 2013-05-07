@@ -85,11 +85,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		event.preventDefault();
 		event.stopPropagation();
 		switch( event.button) {
-			case 0:
-				this.activeLook = true;
-				break;
-			case 2: 
-				this.activeLook = false;
+			case 1:
+				this.activeLook = !this.activeLook;
 				break;
 		}
 
