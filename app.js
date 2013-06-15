@@ -16,6 +16,8 @@ var dbPath = 'mongodb://localhost/nodebackbone';
 var config = {
   mail: require('./config/mail')
 };
+var gridfs = require('./gridfs/gridfs')(mongoose);
+console.log(gridfs);
 // var Account = require('./models/Account')(config, mongoose, nodemailer);
 var app = express();
 app.sessionStore = new MemoryStore();
