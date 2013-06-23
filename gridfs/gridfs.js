@@ -13,14 +13,17 @@ module.exports = function(mongoose) {
 				root: 'fs'
 			});
 
+
 		store.open(function(err, store) {
 			if (err) {
 				return fn(err);
 			} else {
-				if ((store.filename.toString() == store.fileId.toString()) && store.metadata && store.metadata.filename) {
-					store.filename = store.metadata.filename;
-					fn(null, store);
-				}
+				// console.log(store.fileId);
+				// if ((store.filename.toString() == store.fileId.toString()) && store.metadata && store.metadata.filename) {
+				// 	store.filename = store.metadata.filename;
+				// 	fn(null, store);
+				// }
+				fn(null, store);
 			}
 		})
 	};

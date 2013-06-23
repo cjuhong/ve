@@ -17,7 +17,7 @@ var config = {
   mail: require('./config/mail')
 };
 var gridfs = require('./gridfs/gridfs')(mongoose);
-console.log(gridfs);
+// console.log(gridfs);
 // var Account = require('./models/Account')(config, mongoose, nodemailer);
 var app = express();
 app.sessionStore = new MemoryStore();
@@ -82,7 +82,24 @@ fs.readdirSync('routes').forEach(function(file) {
 });
 
 
+app.post('/saveImage', function(req, res) {
+  var fileNameImage = req.files.myFile.name;
+  var options = {
+    content_type: req.files.myFile.type
+  };
+  gridfs.putGridFileByPath(req.files.myFile.path,req.files.myFile.name,options,function(err, result){});
+  res.end(fileNameImage);
+  console.log(req.files);
+});
 
+app.get('/texture/:id',function(req, res){
+  gridfs.getGridFile(req.params.id,function(err, file){
+    res.header("Content-Type", file.type);
+    res.header("Content-Disposition", "attachment; filename="+file.filename);
+    file.stream(true).pipe(res);
+    // res.send(file);
+  });
+});
 
 app.post('/contacts/find', function(req, res) {
   var searchStr = req.param('searchStr', null);

@@ -9,8 +9,8 @@ module.exports = function(app, models) {
 			var clients = sio.sockets.clients(accountId);
 			return (clients.length > 0);
 		};
-		console.log("isAccountOnline is here");
-		debugger;
+		// console.log("isAccountOnline is here");
+		// debugger;
 		sio.set('authorization', function(data, accept) {
 			var signedCookies = cookie.parse(data.headers.cookie);
 			var cookies = utils.parseSignedCookies(signedCookies, app.sessionSecret);
@@ -27,7 +27,7 @@ module.exports = function(app, models) {
 		});
 		sio.sockets.on('connection', function(socket) {
 			console.log("connection in server side");
-			debugger;
+			// debugger;
 			var session = socket.handshake.session;
 			var accountId = session.accountId;
 			var sAccount = null;

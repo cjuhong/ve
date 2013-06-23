@@ -18,7 +18,9 @@ define(['VeView', 'text!templates/login.html'], function(VeView, loginTemplate) 
 					$('#logout').fadeIn();
 					$('#search').fadeIn();
 					$('#contacts').fadeIn();
+					$('#management').fadeIn();
 					$('#register').fadeOut();
+					$('#login').fadeOut();
 					that.hide(data.role);
 					$('#interacts').fadeOut();
 					that.contactsCollection.url = '/accounts/me/contacts';

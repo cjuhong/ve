@@ -10,9 +10,9 @@
 
 
 
-define(['views/index','models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
+define(['views/management','views/index','models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
 
-function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
+function(ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
   var SocialRouter = Backbone.Router.extend({
     currentView: null,
     sessionGroup: {},
@@ -32,7 +32,8 @@ function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContact
       'profile/:id': 'profile',
       'contacts/:id': 'contacts',
       'addContact': 'addContact',
-      'manageContacts': 'manageContacts'
+      'manageContacts': 'manageContacts',
+      'management': 'management'
     },
     initialize: function(options) {
       var that = this;
@@ -59,6 +60,12 @@ function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContact
             break;
           case 6:
             window.location.hash = 'contacts/me';
+            break;
+          case 7:
+            window.location.hash = 'management';
+            break;
+          case 8:
+            window.location.hash = 'login';
             break;
           default:
             // that.navigationSly.slideTo(index);
@@ -125,23 +132,19 @@ function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContact
       this.currentView.render();
     },
     index: function() {
-      // var statusCollection = new StatusCollection();
-      // statusCollection.url = '/accounts/me/activity';
       this.changeView(new IndexView());
-      // statusCollection.fetch();
+
       $.ajax("/account/authenticated", {
         method: "GET",
         success: function(data) {
-          // router.socketEvents.trigger('app:loggedin', data);
           $('#interacts').fadeOut();
-          // return callback(true);
+          $('#manage').fadeOut();
         },
         error: function(data) {
-          // return callback(false);
           return data;
         }
       });
-      console.log("index");
+
     },
     addContact: function() {
       var that = this;
@@ -183,19 +186,19 @@ function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContact
       // var that = this;
       // this.changeView(new LoginView({socketEvents : this.socketEvents}));
       // new Message({navigationSly:that.navigationSly}).render();
-      this.checkLogin(this.runApplication);
+      // this.checkLogin(this.runApplication);
       console.log("vistor");
       // console.log(this.navigationSly);
     },
     exhibitor: function() {
       // this.changeView(new LoginView({socketEvents : this.socketEvents}));
       console.log("exhibitor");
-      this.checkLogin(this.runApplication);
+      // this.checkLogin(this.runApplication);
     },
     organizer: function() {
       // this.changeView(new LoginView({socketEvents : this.socketEvents}));
       console.log("organizer");
-      this.checkLogin(this.runApplication);
+      // this.checkLogin(this.runApplication);
     },
     forgotpassword: function() {
       this.changeView(new ForgotPasswordView());
@@ -209,6 +212,10 @@ function(IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContact
     manageContacts: function() {
       this.changeView(new ContactsView());
       console.log("manageContacts");
+    },
+    management: function() {
+      this.changeView(new ManagementView());
+      console.log("management");
     },
     profile: function(id) {
       var model = new Account({

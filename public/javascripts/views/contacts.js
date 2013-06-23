@@ -3,6 +3,13 @@ define(['VeView', 'views/contact', 'text!templates/contacts.html'],
 function(VeView, ContactView, contactsTemplate) {
 	var contactsView = VeView.extend({
 		el: $('#interacts'),
+		events: {
+			"click .close": "closeWindow"
+		},
+		closeWindow: function(){
+		  $('#interacts').fadeOut();
+		  console.log("closing");
+		},
 		initialize: function(options) {
 			this.navigationSly = options.navigationSly;
 			this.contactsCollection = options.contactsCollection;

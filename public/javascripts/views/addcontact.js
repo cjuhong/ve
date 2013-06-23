@@ -5,7 +5,8 @@ function(NavigationSly,VeView, Contact, ContactView, addcontactTemplate) {
 	var addcontactView = VeView.extend({
 		el: $('#interacts'),
 		events: {
-			"submit form": "search"
+			"submit form": "search",
+			"click .close": "closeWindow"
 		},
 		search: function() {
 			var view = this;
@@ -22,6 +23,10 @@ function(NavigationSly,VeView, Contact, ContactView, addcontactTemplate) {
 		initialize: function(options) {
 			this.navigationSly = NavigationSly;
 			// console.log(NavigationSly);
+		},
+		closeWindow: function(){
+		  $('#interacts').fadeOut();
+		  console.log("closing");
 		},
 		render: function(resultList) {
 			var view = this;
