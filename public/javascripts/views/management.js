@@ -3,7 +3,8 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
   var registerView = VeView.extend({
     el: $('#manage'),
     events: {
-      "change #fileUpload" : "fileListener",
+      "change .uploadDataModel" : "modelListener",
+      "change .uploadDataPhoto" : "photoListener",
       "click .close" : "closeWindow",
       "click .modelNav" : "modelUpload",
       "click .photoNav" : "photoUpload",
@@ -11,8 +12,9 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
     },
     handleImageUpload: function (event) {
       var files = event.target.files;
+      var target = $(event.target);
       var myImage = files[0];
-      this.sendFile(myImage);
+      this.sendFile(myImage,target);
     },
     modelUpload : function(event) {
       $('.navList').html(modelUploadTemplate);
@@ -23,8 +25,8 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
     listAll : function(event) {
       $('.navList').html(listAllTemplate);
     },
-    sendFile: function(image){
-      var uri = '/saveImage';
+    sendFile: function(image,target){
+      var uri = '/data';
       var xhr = new XMLHttpRequest();
       var fd = new FormData();
       xhr.open('POST', uri, true);
@@ -32,16 +34,66 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
         if (xhr.readyState == 4 && xhr.status == 200) {
           var imageName = xhr.responseText;
           console.log(imageName);
+          $(target).next().html("upload successfully");
           //do what you want with the image name returned
           //e.g update the interface
+        }else{
+          $(target).next().html("upload failed");
         }
       };
       fd.append('myFile', image);
       // fd.append('myFile2s', image);
       xhr.send(fd);
     },
-    fileListener: function(event){
-      this.handleImageUpload(event);
+    modelListener: function(event){
+      // this.handleImageUpload(event);
+      var files = event.target.files;
+      var target = $(event.target);
+      var datafile = files[0];
+      var uri = '/data';
+      var xhr = new XMLHttpRequest();
+      var fd = new FormData();
+      xhr.open('POST', uri, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var dataName = xhr.responseText;
+          // console.log(imageName);
+          $(target).next().html("upload successfully");
+          //do what you want with the image name returned
+          //e.g update the interface
+        }else{
+          $(target).next().html("upload failed");
+        }
+      };
+      fd.append('myFile', datafile);
+      fd.append('dataType', "model");
+      // fd.append('myFile2s', image);
+      xhr.send(fd);
+    },
+    photoListener: function(event){
+      // this.handleImageUpload(event);
+      var files = event.target.files;
+      var target = $(event.target);
+      var datafile = files[0];
+      var uri = '/data';
+      var xhr = new XMLHttpRequest();
+      var fd = new FormData();
+      xhr.open('POST', uri, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var dataName = xhr.responseText;
+          // console.log(imageName);
+          $(target).next().html("upload successfully");
+          //do what you want with the image name returned
+          //e.g update the interface
+        }else{
+          $(target).next().html("upload failed");
+        }
+      };
+      fd.append('myFile', datafile);
+      fd.append('dataType', "photo");
+      // fd.append('myFile2s', image);
+      xhr.send(fd);
     },
     closeWindow: function(){
       $('#manage').fadeOut();

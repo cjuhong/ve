@@ -27,7 +27,9 @@ app.server = http.createServer(app);
 var models = {
   Account: require('./models/Account')(app, config, mongoose, nodemailer)
 };
-
+var webModel = {
+  WebModel: require('./models/WebModel')(app, config, mongoose, gridfs)
+};
 
 app.configure(function() {
   app.sessionSecret = 'SocialNet secret key';
@@ -82,17 +84,20 @@ fs.readdirSync('routes').forEach(function(file) {
 });
 
 
-app.post('/saveImage', function(req, res) {
+app.post('/data', function(req, res) {
   var fileNameImage = req.files.myFile.name;
   var options = {
     content_type: req.files.myFile.type
   };
-  gridfs.putGridFileByPath(req.files.myFile.path,req.files.myFile.name,options,function(err, result){});
+  gridfs.putGridFileByPath(req.files.myFile.path,req.files.myFile.name,options,function(err, result){
+
+  });
   res.end(fileNameImage);
-  console.log(req.files);
+  console.log(req.body.dataType);
+  // console.log(req.files);
 });
 
-app.get('/texture/:id',function(req, res){
+app.get('/data/:id',function(req, res){
   gridfs.getGridFile(req.params.id,function(err, file){
     res.header("Content-Type", file.type);
     res.header("Content-Disposition", "attachment; filename="+file.filename);
