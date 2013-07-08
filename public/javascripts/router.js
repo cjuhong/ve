@@ -10,9 +10,9 @@
 
 
 
-define(['views/management','views/index','models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
+define(['views/booth','views/management','views/index','models/Contact','views/talk', 'models/ContactCollection', 'views/contacts', 'views/addcontact', 'views/register', 'views/login', 'views/message', 'NavigationSly'],
 
-function(ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
+function(BoothView,ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsView, AddContactView, RegisterView, LoginView, Message, NavigationSly) {
   var SocialRouter = Backbone.Router.extend({
     currentView: null,
     sessionGroup: {},
@@ -33,7 +33,8 @@ function(ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsV
       'contacts/:id': 'contacts',
       'addContact': 'addContact',
       'manageContacts': 'manageContacts',
-      'management': 'management'
+      'management': 'management',
+      'booth': 'booth'
     },
     initialize: function(options) {
       var that = this;
@@ -66,6 +67,9 @@ function(ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsV
             break;
           case 8:
             window.location.hash = 'login';
+            break;
+          case 9:
+            window.location.hash = 'booth';
             break;
           default:
             // that.navigationSly.slideTo(index);
@@ -215,6 +219,10 @@ function(ManagementView,IndexView,Contact,TalkView, ContactCollection, ContactsV
     },
     management: function() {
       this.changeView(new ManagementView());
+      console.log("management");
+    },
+    booth: function() {
+      this.changeView(new BoothView());
       console.log("management");
     },
     profile: function(id) {

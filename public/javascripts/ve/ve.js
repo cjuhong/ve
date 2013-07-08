@@ -149,7 +149,60 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
     VE.scene.add(boundingBox);
 
 
+/********************************************************************************************/
+$.get('/data/models',function(datas){
+  datas.forEach(function(value){
+    // console.log(value);
+    var texture = new THREE.Texture();
+      var loaderImg = new THREE.ImageLoader();
+      loaderImg.addEventListener( 'load', function ( event ) {
+        texture.image = event.content;
+        texture.needsUpdate = true;
+      } );
+     loaderImg.load( '/data/' + value.textureId );
 
+      // model
+      var loaderObj = new THREE.OBJLoader();
+
+     loaderObj.load( '/data/' + value.modelId, function ( object ) {
+
+        object.traverse( function ( child ) {
+          if ( child instanceof THREE.Mesh ) {
+            child.material.map = texture;
+          }
+        } );
+        // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
+        object.scale.set(2.0,2.0,2.0);
+        VE.scene.add( object );
+      });
+  });
+});
+
+// var texture = new THREE.Texture();
+//   var loaderImg = new THREE.ImageLoader();
+//   loaderImg.addEventListener( 'load', function ( event ) {
+//     texture.image = event.content;
+//     texture.needsUpdate = true;
+//   } );
+//  loaderImg.load( '/data/51d81ec52d3002b218000008' );
+
+//   // model
+//   var loaderObj = new THREE.OBJLoader();
+
+//  loaderObj.load( '/data/51d8dc37a80ad8ee12000004', function ( object ) {
+
+//     object.traverse( function ( child ) {
+//       if ( child instanceof THREE.Mesh ) {
+//         child.material.map = texture;
+//       }
+//     } );
+//     // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
+//     object.scale.set(2.0,2.0,2.0);
+//     VE.scene.add( object );
+//   });
+
+
+/********************************************************************************/
 
 
     // var child = new Physijs.SphereMesh( new THREE.SphereGeometry( 25 ), new THREE.MeshBasicMaterial({ color: 0x8ff828 }) );

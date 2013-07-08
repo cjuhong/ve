@@ -1,18 +1,6 @@
 module.exports = function(app, config, mongoose, gridfs) {
   var crypto = require('crypto');
-  var Status = new mongoose.Schema({
-    name: {
-      first: {
-        type: String
-      },
-      last: {
-        type: String
-      }
-    },
-    status: {
-      type: String
-    }
-  });
+
   var schemaOptions = {
     toJSON: {
       virtuals: true
@@ -21,243 +9,106 @@ module.exports = function(app, config, mongoose, gridfs) {
       virtuals: true
     }
   };
-  var Contact = new mongoose.Schema({
-    name: {
-      first: {
-        type: String
-      },
-      last: {
-        type: String
-      }
-    },
-    accountId: {
-      type: mongoose.Schema.ObjectId
-    },
-    added: {
-      type: Date
-    }, // When the contact was added
-    updated: {
-      type: Date
-    } // When the contact last updated
-  },schemaOptions);
-  Contact.virtual('online').get(function() {
-    return app.isAccountOnline(this.get('accountId'));
-  });
-  var AccountSchema = new mongoose.Schema({
-    email: {
-      type: String,
-      unique: true
-    },
-    password: {
-      type: String
-    },
-    name: {
-      first: {
-        type: String
-      },
-      last: {
-        type: String
-      },
-      full: {
-        type: String
-      }
-    },
-    role: {
-      type: String
-    },
-    birthday: {
-      day: {
-        type: Number,
-        min: 1,
-        max: 31,
-        required: false
-      },
-      month: {
-        type: Number,
-        min: 1,
-        max: 12,
-        required: false
-      },
-      year: {
-        type: Number
-      }
-    },
-    photoUrl: {
-      type: String
-    },
-    biography: {
-      type: String
-    },
-    contacts: [Contact],
-    status: [Status], // My own status updates only
-    activity: [Status] // All status updates including friends
-  });
-  var ModelSchema = new mongoose.Schema({
-    modelId: {
+  
+  var PhotoSchema = new mongoose.Schema({
+    photoId: {
       type: mongoose.Schema.ObjectId,
     },
-    modelType: {
+    dataType: {
       type: String
     },
     userId: {
       type: mongoose.Schema.ObjectId,
-    }
-    textureId: {
-      type: mongoose.Schema.ObjectId,
     },
     name: {
       type: String
     }
   });
+
+
+  var ModelSchema = new mongoose.Schema({
+    userId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    textureId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    modelId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    dataType: {
+      type: String
+    },
+    name: {
+      type: String
+    }
+  });
+
+  var BoothSchema = new mongoose.Schema({
+
+    x:{
+      type: Number
+    },
+    y:{
+      type: Number
+    },
+    z:{
+      type: Number
+    },
+    userId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    userName: {
+      type: String
+    }
+  });
+
   var Model = mongoose.model('Model', ModelSchema);
-  var Account = mongoose.model('Account', AccountSchema);
-  var registerCallback = function(err) {
+  var Photo = mongoose.model('Photo', ModelSchema);
+  var Booth = mongoose.model('Booth', ModelSchema);
+  var uploadModel = function(user_id, texture_id, model_id, data_type,title) {
+    // var shaSum = crypto.createHash('sha256');
+    // shaSum.update(password);
+    // console.log('Registering ' + email);
+    var model = new Model({
+      userId: user_id,
+      textureId: texture_id,
+      modelId: model_id,
+      dataType: data_type,
+      name: title
+    });
+    model.save(uploadCallback);
+    console.log('Save command was sent');
+  };
+  var generateBooth = function(num,position){
+    if(num > 0){
+      for(var i=0;i<num;i++){
+        var booth = new Booth({
+          x: position.x,
+          y: position.y,
+          z: position.z
+        });
+        booth.save();
+      }
+    }
+  };
+  var uploadCallback = function(err) {
     if (err) {
       return console.log(err);
     };
-    return console.log('Account was created');
+    return console.log('Upload was created');
   };
-  var changePassword = function(accountId, newpassword) {
-    var shaSum = crypto.createHash('sha256');
-    shaSum.update(newpassword);
-    var hashedPassword = shaSum.digest('hex');
-    Account.update({
-      _id: accountId
-    }, {
-      $set: {
-        password: hashedPassword
-      }
-    }, {
-      upsert: false
-    },
 
-    function changePasswordCallback(err) {
-      console.log('Change password done for account ' + accountId);
-    });
-  };
-  var forgotPassword = function(email, resetPasswordUrl, callback) {
-    var user = Account.findOne({
-      email: email
-    }, function findAccount(err, doc) {
-      if (err) {
-        // Email address is not a valid user
-        callback(false);
-      } else {
-        var smtpTransport = nodemailer.createTransport('SMTP', config.mail);
-        resetPasswordUrl += '?account=' + doc._id;
-        smtpTransport.sendMail({
-          from: 'thisapp@example.com',
-          to: doc.email,
-          subject: 'SocialNet Password Request',
-          text: 'Click here to reset your password: ' + resetPasswordUrl
-        }, function forgotPasswordResult(err) {
-          if (err) {
-            callback(false);
-          } else {
-            callback(true);
-          }
-        });
-      }
-    });
-  };
-  var login = function(email, password, callback) {
-    var shaSum = crypto.createHash('sha256');
-    shaSum.update(password);
-    Account.findOne({
-      email: email,
-      password: shaSum.digest('hex')
-    }, function(err, doc) {
+  var findAll = function(user_id, callback) {
+    // var searchRegex = new RegExp(searchStr, 'i');
+    Model.find({userId:user_id}, function(err, doc) {
       callback(doc);
     });
   };
-  var findByString = function(searchStr, callback) {
-    var searchRegex = new RegExp(searchStr, 'i');
-    Account.find({
-      $or: [{
-        'name.full': {
-          $regex: searchRegex
-        }
-      }, {
-        email: {
-          $regex: searchRegex
-        }
-      }]
-    }, callback);
-  };
-  var findById = function(accountId, callback) {
-    Account.findOne({
-      _id: accountId
-    }, function(err, doc) {
-      callback(doc);
-    });
-  };
-  var addContact = function(account, addcontact) {
-    contact = {
-      name: {
-        first: addcontact.name.first,
-        last: addcontact.name.last
-      },
-      accountId: addcontact._id,
-      added: new Date(),
-      updated: new Date()
-    };
-    account.contacts.push(contact);
-    account.save(function(err) {
-      if (err) {
-        console.log('Error saving account: ' + err);
-      }
-    });
-  };
-  var removeContact = function(account, contactId) {
-    if (null == account.contacts) return;
-    account.contacts.forEach(function(contact) {
-      if (contact.accountId == contactId) {
-        account.contacts.remove(contact);
-      }
-    });
-    account.save();
-  };
-  var hasContact = function(account, contactId) {
-    if (null == account.contacts) return false;
-    // account.contacts.forEach(function(contact) {
-    //   if (contact.accountId == contactId) {
-    //     return true;
-    //   }
-    // });
-    for (var i = 0; i < account.contacts.length; i++) {
-      if( account.contacts[i].accountId == contactId) {
-        return true;
-      }
-    };
-    return false;
-  };
-  var register = function(email, password, firstName, lastName,role) {
-    var shaSum = crypto.createHash('sha256');
-    shaSum.update(password);
-    console.log('Registering ' + email);
-    var user = new Account({
-      email: email,
-      name: {
-        first: firstName,
-        last: lastName,
-        full: firstName + ' ' + lastName
-      },
-      role: role,
-      password: shaSum.digest('hex')
-    });
-    user.save(registerCallback);
-    console.log('Save command was sent');
-  };
+
   return {
-    findById: findById,
-    register: register,
-    hasContact: hasContact,
-    forgotPassword: forgotPassword,
-    changePassword: changePassword,
-    findByString: findByString,
-    addContact: addContact,
-    removeContact: removeContact,
-    login: login,
-    Account: Account
+    uploadModel: uploadModel,
+    findAll:findAll,
+    generateBooth: generateBooth
   };
-}
+};

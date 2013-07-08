@@ -1,429 +1,316 @@
 /**
- * @author mrdoob / http://mrdoob.com/
- */
+* @author mrdoob / http://mrdoob.com/
+*/
 
-THREE.OBJLoader = function () {};
+THREE.OBJLoader = function () {
+
+THREE.EventDispatcher.call( this );
+
+};
 
 THREE.OBJLoader.prototype = {
 
-	constructor: THREE.OBJLoader,
+constructor: THREE.OBJLoader,
 
-	addEventListener: THREE.EventDispatcher.prototype.addEventListener,
-	hasEventListener: THREE.EventDispatcher.prototype.hasEventListener,
-	removeEventListener: THREE.EventDispatcher.prototype.removeEventListener,
-	dispatchEvent: THREE.EventDispatcher.prototype.dispatchEvent,
+load: function ( url, callback ) {
 
-	load: function ( url, callback ) {
+var scope = this;
+var request = new XMLHttpRequest();
 
-		var scope = this;
-		var request = new XMLHttpRequest();
+request.addEventListener( 'load', function ( event ) {
 
-		request.addEventListener( 'load', function ( event ) {
+var hierarchy = scope.parse( event.target.responseText );
 
-			var response = scope.parse( event.target.responseText );
+scope.dispatchEvent( { type: 'load', content: hierarchy } );
 
-			scope.dispatchEvent( { type: 'load', content: response } );
+if ( callback ) callback( hierarchy );
 
-			if ( callback ) callback( response );
+}, false );
 
-		}, false );
+request.addEventListener( 'progress', function ( event ) {
 
-		request.addEventListener( 'progress', function ( event ) {
+scope.dispatchEvent( { type: 'progress', loaded: event.loaded, total: event.total } );
 
-			scope.dispatchEvent( { type: 'progress', loaded: event.loaded, total: event.total } );
+}, false );
 
-		}, false );
+request.addEventListener( 'error', function () {
 
-		request.addEventListener( 'error', function () {
+scope.dispatchEvent( { type: 'error', message: 'Couldn\'t load URL [' + url + ']' } );
 
-			scope.dispatchEvent( { type: 'error', message: 'Couldn\'t load URL [' + url + ']' } );
+}, false );
 
-		}, false );
+request.open( 'GET', url, true );
+request.send( null );
 
-		request.open( 'GET', url, true );
-		request.send( null );
+},
 
-	},
+parse: function ( data ) {
 
-	parse: function ( data ) {
+function vector( x, y, z ) {
 
-		// fixes
+return new THREE.Vector3( x, y, z );
 
-		data = data.replace( /\ \\\r\n/g, '' ); // rhino adds ' \\r\n' some times.
+}
 
-		//
+function uv( u, v ) {
 
-		function vector( x, y, z ) {
+return new THREE.Vector2( u, v );
 
-			return new THREE.Vector3( x, y, z );
+}
 
-		}
+function face3( a, b, c, normals ) {
 
-		function uv( u, v ) {
+return new THREE.Face3( a, b, c, normals );
 
-			return new THREE.Vector2( u, v );
+}
 
-		}
+function face4( a, b, c, d, normals ) {
 
-		function face3( a, b, c, normals ) {
+return new THREE.Face4( a, b, c, d, normals );
 
-			return new THREE.Face3( a, b, c, normals );
+}
 
-		}
+var group = new THREE.Object3D();
 
-		function face4( a, b, c, d, normals ) {
+var vertices = [];
+var normals = [];
+var uvs = [];
 
-			return new THREE.Face4( a, b, c, d, normals );
+var pattern, result;
 
-		}
+// v float float float
 
-		function meshN( meshName, materialName ) {
+pattern = /v( +[\d|\.|\+|\-|e]+)( [\d|\.|\+|\-|e]+)( [\d|\.|\+|\-|e]+)/g;
 
-			if ( geometry.vertices.length > 0 ) {
+while ( ( result = pattern.exec( data ) ) != null ) {
 
-				geometry.mergeVertices();
-				geometry.computeCentroids();
-				geometry.computeFaceNormals();
-				geometry.computeBoundingSphere();
+// ["v 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
 
-				object.add( mesh );
+vertices.push( vector(
+parseFloat( result[ 1 ] ),
+parseFloat( result[ 2 ] ),
+parseFloat( result[ 3 ] )
+) );
 
-				geometry = new THREE.Geometry();
-				mesh = new THREE.Mesh( geometry, material );
+}
 
-				verticesCount = 0;
 
-			}
+// vn float float float
 
-			if ( meshName !== undefined ) mesh.name = meshName;
-			if ( materialName !== undefined ) {
+pattern = /vn( +[\d|\.|\+|\-|e]+)( [\d|\.|\+|\-|e]+)( [\d|\.|\+|\-|e]+)/g;
 
-				material = new THREE.MeshLambertMaterial();
-				material.name = materialName;
+while ( ( result = pattern.exec( data ) ) != null ) {
 
-				mesh.material = material;
+// ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
 
-			}
+normals.push( vector(
+parseFloat( result[ 1 ] ),
+parseFloat( result[ 2 ] ),
+parseFloat( result[ 3 ] )
+) );
 
-		}
+}
 
-		var group = new THREE.Object3D();
-		var object = group;
+// vt float float
 
-		var geometry = new THREE.Geometry();
-		var material = new THREE.MeshLambertMaterial();
-		var mesh = new THREE.Mesh( geometry, material );
+pattern = /vt( +[\d|\.|\+|\-|e]+)( [\d|\.|\+|\-|e]+)/g;
 
-		var vertices = [];
-		var verticesCount = 0;
-		var normals = [];
-		var uvs = [];
+while ( ( result = pattern.exec( data ) ) != null ) {
 
-		// v float float float
+// ["vt 0.1 0.2", "0.1", "0.2"]
 
-		var vertex_pattern = /v( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
+uvs.push( uv(
+parseFloat( result[ 1 ] ),
+parseFloat( result[ 2 ] )
+) );
 
-		// vn float float float
+}
 
-		var normal_pattern = /vn( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
+var splitData = data.split( '\no ' );
 
-		// vt float float
+for ( var i = 0, l = splitData.length; i < l; i ++ ) {
 
-		var uv_pattern = /vt( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/
+var object = splitData[ i ];
 
-		// f vertex vertex vertex ...
+var geometry = new THREE.Geometry();
 
-		var face_pattern1 = /f( +\d+)( +\d+)( +\d+)( +\d+)?/
+geometry.vertices = vertices;
 
-		// f vertex/uv vertex/uv vertex/uv ...
+// f vertex vertex vertex ...
 
-		var face_pattern2 = /f( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))?/;
+pattern = /f( +[\d]+)( [\d]+)( [\d]+)( [\d]+)?/g;
 
-		// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
+while ( ( result = pattern.exec( object ) ) != null ) {
 
-		var face_pattern3 = /f( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))?/;
+// ["f 1 2 3", "1", "2", "3", undefined]
 
-		// f vertex//normal vertex//normal vertex//normal ...
+if ( result[ 4 ] === undefined ) {
 
-		var face_pattern4 = /f( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))?/;
+geometry.faces.push( face3(
+parseInt( result[ 1 ] ) - 1,
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 3 ] ) - 1
+) );
 
-		//
+} else {
 
-		var lines = data.split( "\n" );
+geometry.faces.push( face4(
+parseInt( result[ 1 ] ) - 1,
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 3 ] ) - 1,
+parseInt( result[ 4 ] ) - 1
+) );
 
-		for ( var i = 0; i < lines.length; i ++ ) {
+}
 
-			var line = lines[ i ];
-			line = line.trim();
+}
 
-			var result;
+// f vertex/uv vertex/uv vertex/uv ...
 
-			if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
+pattern = /f( +([\d]+)\/([\d]+))( ([\d]+)\/([\d]+))( ([\d]+)\/([\d]+))( ([\d]+)\/([\d]+))?/g;
 
-				continue;
+while ( ( result = pattern.exec( object ) ) != null ) {
 
-			} else if ( ( result = vertex_pattern.exec( line ) ) !== null ) {
+// ["f 1/1 2/2 3/3", " 1/1", "1", "1", " 2/2", "2", "2", " 3/3", "3", "3", undefined, undefined, undefined]
 
-				// ["v 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+if ( result[ 10 ] === undefined ) {
 
-				vertices.push( vector(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] ),
-					parseFloat( result[ 3 ] )
-				) );
+geometry.faces.push( face3(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 5 ] ) - 1,
+parseInt( result[ 8 ] ) - 1
+) );
 
-			} else if ( ( result = normal_pattern.exec( line ) ) !== null ) {
+geometry.faceVertexUvs[ 0 ].push( [
+uvs[ parseInt( result[ 3 ] ) - 1 ],
+uvs[ parseInt( result[ 6 ] ) - 1 ],
+uvs[ parseInt( result[ 9 ] ) - 1 ]
+] );
 
-				// ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+} else {
 
-				normals.push( vector(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] ),
-					parseFloat( result[ 3 ] )
-				) );
+geometry.faces.push( face4(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 5 ] ) - 1,
+parseInt( result[ 8 ] ) - 1,
+parseInt( result[ 11 ] ) - 1
+) );
 
-			} else if ( ( result = uv_pattern.exec( line ) ) !== null ) {
+geometry.faceVertexUvs[ 0 ].push( [
+uvs[ parseInt( result[ 3 ] ) - 1 ],
+uvs[ parseInt( result[ 6 ] ) - 1 ],
+uvs[ parseInt( result[ 9 ] ) - 1 ],
+uvs[ parseInt( result[ 12 ] ) - 1 ]
+] );
 
-				// ["vt 0.1 0.2", "0.1", "0.2"]
+}
 
-				uvs.push( uv(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] )
-				) );
+}
 
-			} else if ( ( result = face_pattern1.exec( line ) ) !== null ) {
+// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
 
-				// ["f 1 2 3", "1", "2", "3", undefined]
+pattern = /f( +([\d]+)\/([\d]+)\/([\d]+))( ([\d]+)\/([\d]+)\/([\d]+))( ([\d]+)\/([\d]+)\/([\d]+))( ([\d]+)\/([\d]+)\/([\d]+))?/g;
 
-				if ( result[ 4 ] === undefined ) {
+while ( ( result = pattern.exec( object ) ) != null ) {
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 1 ] ) - 1 ],
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 3 ] ) - 1 ]
-					);
+// ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3", undefined, undefined, undefined, undefined]
 
-					geometry.faces.push( face3(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++
-					) );
+if ( result[ 13 ] === undefined ) {
 
-				} else {
+geometry.faces.push( face3(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 6 ] ) - 1,
+parseInt( result[ 10 ] ) - 1,
+[
+normals[ parseInt( result[ 4 ] ) - 1 ],
+normals[ parseInt( result[ 8 ] ) - 1 ],
+normals[ parseInt( result[ 12 ] ) - 1 ]
+]
+) );
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 1 ] ) - 1 ],
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 3 ] ) - 1 ],
-						vertices[ parseInt( result[ 4 ] ) - 1 ]
-					);
+geometry.faceVertexUvs[ 0 ].push( [
+uvs[ parseInt( result[ 3 ] ) - 1 ],
+uvs[ parseInt( result[ 7 ] ) - 1 ],
+uvs[ parseInt( result[ 11 ] ) - 1 ]
+] );
 
-					geometry.faces.push( face4(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++
-					) );
+} else {
 
-				}
+geometry.faces.push( face4(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 6 ] ) - 1,
+parseInt( result[ 10 ] ) - 1,
+parseInt( result[ 14 ] ) - 1,
+[
+normals[ parseInt( result[ 4 ] ) - 1 ],
+normals[ parseInt( result[ 8 ] ) - 1 ],
+normals[ parseInt( result[ 12 ] ) - 1 ],
+normals[ parseInt( result[ 16 ] ) - 1 ]
+]
+) );
 
-			} else if ( ( result = face_pattern2.exec( line ) ) !== null ) {
+geometry.faceVertexUvs[ 0 ].push( [
+uvs[ parseInt( result[ 3 ] ) - 1 ],
+uvs[ parseInt( result[ 7 ] ) - 1 ],
+uvs[ parseInt( result[ 11 ] ) - 1 ],
+uvs[ parseInt( result[ 15 ] ) - 1 ]
+] );
 
-				// ["f 1/1 2/2 3/3", " 1/1", "1", "1", " 2/2", "2", "2", " 3/3", "3", "3", undefined, undefined, undefined]
+}
 
-				if ( result[ 10 ] === undefined ) {
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 5 ] ) - 1 ],
-						vertices[ parseInt( result[ 8 ] ) - 1 ]
-					);
+}
 
-					geometry.faces.push( face3(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++
-					) );
+// f vertex//normal vertex//normal vertex//normal ...
 
-					geometry.faceVertexUvs[ 0 ].push( [
-						uvs[ parseInt( result[ 3 ] ) - 1 ],
-						uvs[ parseInt( result[ 6 ] ) - 1 ],
-						uvs[ parseInt( result[ 9 ] ) - 1 ]
-					] );
+pattern = /f( +([\d]+)\/\/([\d]+))( ([\d]+)\/\/([\d]+))( ([\d]+)\/\/([\d]+))( ([\d]+)\/\/([\d]+))?/g;
 
-				} else {
+while ( ( result = pattern.exec( object ) ) != null ) {
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 5 ] ) - 1 ],
-						vertices[ parseInt( result[ 8 ] ) - 1 ],
-						vertices[ parseInt( result[ 11 ] ) - 1 ]
-					);
+// ["f 1//1 2//2 3//3", " 1//1", "1", "1", " 2//2", "2", "2", " 3//3", "3", "3", undefined, undefined, undefined]
 
-					geometry.faces.push( face4(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++
-					) );
+if ( result[ 10 ] === undefined ) {
 
-					geometry.faceVertexUvs[ 0 ].push( [
-						uvs[ parseInt( result[ 3 ] ) - 1 ],
-						uvs[ parseInt( result[ 6 ] ) - 1 ],
-						uvs[ parseInt( result[ 9 ] ) - 1 ],
-						uvs[ parseInt( result[ 12 ] ) - 1 ]
-					] );
+geometry.faces.push( face3(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 5 ] ) - 1,
+parseInt( result[ 8 ] ) - 1,
+[
+normals[ parseInt( result[ 3 ] ) - 1 ],
+normals[ parseInt( result[ 6 ] ) - 1 ],
+normals[ parseInt( result[ 9 ] ) - 1 ]
+]
+) );
 
-				}
+} else {
 
-			} else if ( ( result = face_pattern3.exec( line ) ) !== null ) {
+geometry.faces.push( face4(
+parseInt( result[ 2 ] ) - 1,
+parseInt( result[ 5 ] ) - 1,
+parseInt( result[ 8 ] ) - 1,
+parseInt( result[ 11 ] ) - 1,
+[
+normals[ parseInt( result[ 3 ] ) - 1 ],
+normals[ parseInt( result[ 6 ] ) - 1 ],
+normals[ parseInt( result[ 9 ] ) - 1 ],
+normals[ parseInt( result[ 12 ] ) - 1 ]
+]
+) );
 
-				// ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3", undefined, undefined, undefined, undefined]
+}
 
-				if ( result[ 13 ] === undefined ) {
+}
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 6 ] ) - 1 ],
-						vertices[ parseInt( result[ 10 ] ) - 1 ]
-					);
+geometry.computeCentroids();
+geometry.computeFaceNormals();
+geometry.computeBoundingSphere();
 
-					geometry.faces.push( face3(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						[
-							normals[ parseInt( result[ 4 ] ) - 1 ],
-							normals[ parseInt( result[ 8 ] ) - 1 ],
-							normals[ parseInt( result[ 12 ] ) - 1 ]
-						]
-					) );
+group.add( new THREE.Mesh( geometry, new THREE.MeshLambertMaterial() ) );
 
-					geometry.faceVertexUvs[ 0 ].push( [
-						uvs[ parseInt( result[ 3 ] ) - 1 ],
-						uvs[ parseInt( result[ 7 ] ) - 1 ],
-						uvs[ parseInt( result[ 11 ] ) - 1 ]
-					] );
+}
 
-				} else {
+return group;
 
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 6 ] ) - 1 ],
-						vertices[ parseInt( result[ 10 ] ) - 1 ],
-						vertices[ parseInt( result[ 14 ] ) - 1 ]
-					);
+}
 
-					geometry.faces.push( face4(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						[
-							normals[ parseInt( result[ 4 ] ) - 1 ],
-							normals[ parseInt( result[ 8 ] ) - 1 ],
-							normals[ parseInt( result[ 12 ] ) - 1 ],
-							normals[ parseInt( result[ 16 ] ) - 1 ]
-						]
-					) );
-
-					geometry.faceVertexUvs[ 0 ].push( [
-						uvs[ parseInt( result[ 3 ] ) - 1 ],
-						uvs[ parseInt( result[ 7 ] ) - 1 ],
-						uvs[ parseInt( result[ 11 ] ) - 1 ],
-						uvs[ parseInt( result[ 15 ] ) - 1 ]
-					] );
-
-				}
-
-			} else if ( ( result = face_pattern4.exec( line ) ) !== null ) {
-
-				// ["f 1//1 2//2 3//3", " 1//1", "1", "1", " 2//2", "2", "2", " 3//3", "3", "3", undefined, undefined, undefined]
-
-				if ( result[ 10 ] === undefined ) {
-
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 5 ] ) - 1 ],
-						vertices[ parseInt( result[ 8 ] ) - 1 ]
-					);
-
-					geometry.faces.push( face3(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						[
-							normals[ parseInt( result[ 3 ] ) - 1 ],
-							normals[ parseInt( result[ 6 ] ) - 1 ],
-							normals[ parseInt( result[ 9 ] ) - 1 ]
-						]
-					) );
-
-				} else {
-
-					geometry.vertices.push(
-						vertices[ parseInt( result[ 2 ] ) - 1 ],
-						vertices[ parseInt( result[ 5 ] ) - 1 ],
-						vertices[ parseInt( result[ 8 ] ) - 1 ],
-						vertices[ parseInt( result[ 11 ] ) - 1 ]
-					);
-
-					geometry.faces.push( face4(
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						verticesCount ++,
-						[
-							normals[ parseInt( result[ 3 ] ) - 1 ],
-							normals[ parseInt( result[ 6 ] ) - 1 ],
-							normals[ parseInt( result[ 9 ] ) - 1 ],
-							normals[ parseInt( result[ 12 ] ) - 1 ]
-						]
-					) );
-
-				}
-
-			} else if ( /^o /.test( line ) ) {
-
-				// object
-
-				object = new THREE.Object3D();
-				object.name = line.substring( 2 ).trim();
-				group.add( object );
-
-			} else if ( /^g /.test( line ) ) {
-
-				// group
-
-				meshN( line.substring( 2 ).trim(), undefined );
-
-			} else if ( /^usemtl /.test( line ) ) {
-
-				// material
-
-				meshN( undefined, line.substring( 7 ).trim() );
-
-			} else if ( /^mtllib /.test( line ) ) {
-
-				// mtl file
-
-			} else if ( /^s /.test( line ) ) {
-
-				// smooth shading
-
-			} else {
-
-				// console.log( "THREE.OBJLoader: Unhandled line " + line );
-
-			}
-
-		}
-
-		// add the last group
-		meshN( undefined, undefined );
-
-		return group;
-
-	}
-
-};
+}

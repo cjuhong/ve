@@ -22,9 +22,9 @@ require.config({
   shim: {
     'Sly': ['jQuery'],
     'Backbone': ['Underscore', 'jQuery'],
+    'physi': ['ThreeJs','OBJLoader'],
     'FirstPersonControls': ['ThreeJs'],
     'OBJLoader': ['ThreeJs'],
-    'physi': ['ThreeJs'],
     'AxisHelper':  ['ThreeJs'],
     'CameraHelper': ['ThreeJs'],
     'VirtualExhibition': ['Backbone','FirstPersonControls','OBJLoader','AxisHelper','CameraHelper','Sly','physi']
