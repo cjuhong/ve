@@ -15,7 +15,7 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
       "click .close" : "closeWindow",
       // "click .modelNav" : "modelUpload",
       "click .booth_generate" : "booth_generate",
-      "click .desk" : "desk",
+      "click .desk_generate" : "desk_generate",
       // "click .allNav" : "listAll",
       "click button.booth" : "generate",
       "click button.desk" : "generateDesk"
@@ -23,13 +23,12 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
     generateDesk: function(event){
        var num = this.$('#desk_num').val();
        num = num.valueOf();
-       console.log(num);
-       // for(var i=0;i<num;i++){
-       //  VE.desk(-2000 + i*210);
-       // }
-       // VE.desk(-2000);
+
+       for(var i=0;i<num;i++){
+        VE.desk(-2000 + i*210);
+       }
     },
-    desk: function(event){
+    desk_generate: function(event){
       $('.navList').html(deskGenerateTemplate);
     },
     booth_generate : function(event) {

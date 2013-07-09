@@ -62,7 +62,7 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
     // VE.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 500, 1000 );
 
     // VE.camera.position.set(-274, -300, 199);
-    VE.camera.position.set(-2740, -300, 1990);
+    VE.camera.position.set(-2740, 300, 1990);
     // VE.camera.position.set(600, -300, 600);
 
     //  VE.camera.position.set(0,0-(VE.HallConfig.height/2 - 200/2),500);
