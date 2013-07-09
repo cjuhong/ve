@@ -18,6 +18,7 @@ define(['VeView', 'text!templates/login.html'], function(VeView, loginTemplate) 
 					$('#logout').fadeIn();
 					$('#search').fadeIn();
 					$('#contacts').fadeIn();
+					$('#booth').fadeIn();
 					$('#management').fadeIn();
 					$('#register').fadeOut();
 					$('#login').fadeOut();

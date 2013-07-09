@@ -1,5 +1,5 @@
-define(['text!templates/booth_generate.html''text!templates/booth.html', 'VeView'],
-  function(boothGenerateTemplate,boothTemplate, VeView) {
+define(['text!templates/desk_generate.html','text!templates/booth_generate.html','text!templates/booth.html', 'VeView','ve/ve'],
+  function(deskGenerateTemplate,boothGenerateTemplate,boothTemplate, VeView,VE) {
   var boothView = VeView.extend({
     el: $('#boothDiv'),
     // initialize: function(options) {
@@ -10,22 +10,57 @@ define(['text!templates/booth_generate.html''text!templates/booth.html', 'VeView
     //   });
     // },
     events: {
-      "change .uploadDataModel" : "modelListener",
-      "change .uploadDataPhoto" : "photoListener",
+      // "change .uploadDataModel" : "modelListener",
+      // "change .uploadDataPhoto" : "photoListener",
       "click .close" : "closeWindow",
-      "click .modelNav" : "modelUpload",
-      "click .photoNav" : "photoUpload",
-      "click .allNav" : "listAll",
-      "click button" : "upload"
+      // "click .modelNav" : "modelUpload",
+      "click .booth_generate" : "booth_generate",
+      "click .desk" : "desk",
+      // "click .allNav" : "listAll",
+      "click button.booth" : "generate",
+      "click button.desk" : "generateDesk"
     },
+    generateDesk: function(event){
+       var num = this.$('#desk_num').val();
+       num = num.valueOf();
+       console.log(num);
+       // for(var i=0;i<num;i++){
+       //  VE.desk(-2000 + i*210);
+       // }
+       // VE.desk(-2000);
+    },
+    desk: function(event){
+      $('.navList').html(deskGenerateTemplate);
+    },
+    booth_generate : function(event) {
+      $('.navList').html(boothGenerateTemplate);
+    },
+    generate: function(event){
+      var num = this.$('#booth_num').val();
+      num = num.valueOf();
+      for(var i=0;i<num;i++){
+        // var boxxx = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );
+        // boxxx.position.x = -1750;
+        // // boxxx.position.y = 200;
+        // boxxx.position.z = 1500;
+        // VE.scene.add(boxxx);
+        VE.booths(-2080 + i*420);
+      }
 
+      // // console.log(VE);
+      // var boxxx = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );
+      // boxxx.position.x = -1750;
+      // // boxxx.position.y = 200;
+      // boxxx.position.z = 1500;
+      // VE.scene.add(boxxx);
+    },
     closeWindow: function(){
       // $('#manage').remove();
       $('#boothDiv').fadeOut();
       console.log("closing");
     },
     render: function() {
-      $(this.el).html(boothGenerateTemplate).fadeIn();
+      $(this.el).html(boothTemplate).fadeIn();
     }
   });
   return boothView;

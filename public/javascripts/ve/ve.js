@@ -209,17 +209,17 @@ $.get('/data/models',function(datas){
     // child.position.z = 50;
 
     // parent.add( child );
-    VE.booths(2000);
-    VE.booths(1600);
-    VE.booths(1200);
-    VE.booths(800);
-    VE.booths(400);
-    VE.booths(-400);
-    VE.booths(-800);
-    VE.booths(-1200);
-    VE.booths(-1600);
-    VE.booths(-2000);
-    VE.desk();
+    // VE.booths(-2080);
+    // VE.booths(-1660);
+    // VE.booths(-1240);
+    // VE.booths(-820);
+    // VE.booths(-400);
+    // VE.booths(20);
+    // VE.booths(440);
+    // VE.booths(-1240);
+    // VE.booths(-1660);
+    // VE.booths(-2080);
+    // VE.desk(-2000);
 
     // Box
     // var box = new Physijs.BoxMesh(
@@ -297,16 +297,16 @@ $.get('/data/models',function(datas){
     if (!VE.over) window.requestAnimationFrame(VE.animate);
   };
 
-  VE.desk = function() {
+  VE.desk = function(xp) {
 
-    var box = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );
-    box.position.x = -1750;
-    // box.position.y = 200;
-    box.position.z = 1500;
+    // var box = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );
+    // box.position.x = -1750;
+    // // box.position.y = 200;
+    // box.position.z = 1500;
 
     var top = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x888888 }) );
-    top.position.x = -2000;
-    // top.position.y = 200;
+    top.position.x = xp;
+    top.position.y = -260;
     top.position.z = 1500;
 
     var _leg = new Physijs.BoxMesh( new THREE.CubeGeometry( 10, 100, 10 ), new THREE.MeshBasicMaterial({ color: 0x888888 }) );
@@ -336,8 +336,8 @@ $.get('/data/models',function(datas){
 
     VE.blocks.push(top);
     VE.scene.add( top );
-    VE.blocks.push(box);
-    VE.scene.add( box );
+    // VE.blocks.push(box);
+    // VE.scene.add( box );
   };
 
   VE.booths = function(xp) {
@@ -362,7 +362,9 @@ $.get('/data/models',function(datas){
     wall_material_back.map.repeat.set(1, 1);
 
     var top = new Physijs.BoxMesh( new THREE.CubeGeometry( 400, 10, 400 ), new THREE.MeshBasicMaterial({ color: 0x888888 }) );
-    top.position.x = xp
+    top.position.x = xp;
+    top.position.y = 80;
+    console.log(top.position.y );
     //back wall
     var _wall = new Physijs.BoxMesh( new THREE.CubeGeometry( 400, 400, 10 ), wall_material_back );
     _wall.position.y = -200;

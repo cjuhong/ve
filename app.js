@@ -111,7 +111,7 @@ app.get('/data/models',function(req, res){
 
 app.post('/booth/generateBooth',function(req, res){
   // models.WebModel.generateBooth();
-};
+});
 
 app.get('/data/:id',function(req, res){
 

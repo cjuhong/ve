@@ -73,6 +73,11 @@ body {margin: 0; padding: 0; overflow: hidden;}
     float: right;
 }
 
+#boothDiv .close {
+    float: right;
+}
+
+
 #interacts .close {
     float: right;
 }
@@ -112,7 +117,9 @@ body {margin: 0; padding: 0; overflow: hidden;}
 #contacts {
     display: none;
 }
-
+#booth {
+    display: none;
+}
 #talk div
 {
     display: none;

@@ -13,6 +13,7 @@ define(['router','NavigationSly','models/ContactCollection','VeSockets'],
           // router.socketEvents.trigger('VEStart', data);
           $('#logout').fadeIn();
           $('#search').fadeIn();
+          $('#booth').fadeIn();
           $('#register').fadeOut();
           $('#login').fadeOut();
           $('#contacts').fadeIn();
