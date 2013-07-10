@@ -36,6 +36,7 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
     },
     generate: function(event){
       var num = this.$('#booth_num').val();
+      var xp = [];
       num = num.valueOf();
       for(var i=0;i<num;i++){
         // var boxxx = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );
@@ -43,8 +44,13 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
         // // boxxx.position.y = 200;
         // boxxx.position.z = 1500;
         // VE.scene.add(boxxx);
-        VE.booths(-2080 + i*420);
+        var x = -2080 + i*420;
+        xp[i]=x;
+        VE.booths(x);
       }
+      $.post('/generateBooth/'+num,{'xp':xp},function(){
+        console.log(data);
+      });
 
       // // console.log(VE);
       // var boxxx = new Physijs.BoxMesh( new THREE.CubeGeometry( 200, 10, 200 ), new THREE.MeshBasicMaterial({ color: 0x8ff888 }) );

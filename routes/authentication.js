@@ -20,6 +20,7 @@ module.exports = function(app, models) {
 			req.session.loggedIn = true;
 			req.session.accountId = account._id;
 			req.session.role = account.role;
+			req.session.username = account.name.full;
 			res.send({id:account._id,role:account.role});
 		});
 	});

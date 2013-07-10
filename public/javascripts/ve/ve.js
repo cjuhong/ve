@@ -178,6 +178,17 @@ $.get('/data/models',function(datas){
   });
 });
 
+$.get('/fethcAllBooths',function(data){
+  
+  data.forEach(function(value){
+    console.log(value);
+    VE.booths(value.x);
+  });
+
+});
+
+
+
 // var texture = new THREE.Texture();
 //   var loaderImg = new THREE.ImageLoader();
 //   loaderImg.addEventListener( 'load', function ( event ) {

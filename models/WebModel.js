@@ -64,8 +64,8 @@ module.exports = function(app, config, mongoose, gridfs) {
   });
 
   var Model = mongoose.model('Model', ModelSchema);
-  var Photo = mongoose.model('Photo', ModelSchema);
-  var Booth = mongoose.model('Booth', ModelSchema);
+  var Photo = mongoose.model('Photo', PhotoSchema);
+  var Booth = mongoose.model('Booth', BoothSchema);
   var uploadModel = function(user_id, texture_id, model_id, data_type,title) {
     // var shaSum = crypto.createHash('sha256');
     // shaSum.update(password);
@@ -80,17 +80,17 @@ module.exports = function(app, config, mongoose, gridfs) {
     model.save(uploadCallback);
     console.log('Save command was sent');
   };
-  var generateBooth = function(num,position){
-    if(num > 0){
-      for(var i=0;i<num;i++){
+  var generateBooth = function(user_id,user_name,xp,yp,zp){
+
         var booth = new Booth({
-          x: position.x,
-          y: position.y,
-          z: position.z
+          x: xp,
+          y: yp,
+          z: zp,
+          userId: user_id,
+          userName:user_name
         });
         booth.save();
-      }
-    }
+    console.log('Save command was sent');
   };
   var uploadCallback = function(err) {
     if (err) {
@@ -105,10 +105,17 @@ module.exports = function(app, config, mongoose, gridfs) {
       callback(doc);
     });
   };
+  var fethcAllBooths = function(callback) {
+    // var searchRegex = new RegExp(searchStr, 'i');
+    Booth.find({}, function(err, doc) {
+      callback(doc);
+    });
+  };
 
   return {
     uploadModel: uploadModel,
     findAll:findAll,
-    generateBooth: generateBooth
+    generateBooth: generateBooth,
+    fethcAllBooths: fethcAllBooths
   };
 };

@@ -113,6 +113,30 @@ app.post('/booth/generateBooth',function(req, res){
   // models.WebModel.generateBooth();
 });
 
+models.WebModel.generateBooth('517cfa42faa4dcf41500000a','aaa', -800,200,100);
+models.WebModel.fethcAllBooths(function(doc){
+  // res.send(doc);
+  console.log(doc);
+});
+
+app.post('/generateBooth/:num', function(req, res) {
+  var num = req.params.num;
+  // console.log();
+  var xps = req.body.xp;
+  if(num > 0){
+    for(var i=0;i<num;i++){
+      models.WebModel.generateBooth(req.session.accountId,req.session.username, xps[i],200,100);
+    }
+  }
+  // console.log(message);
+});
+
+app.get('/fethcAllBooths',function(req, res){
+  models.WebModel.fethcAllBooths(function(doc){
+    res.send(doc);
+  });
+});
+
 app.get('/data/:id',function(req, res){
 
   if(req.session.loggedIn){
