@@ -62,7 +62,7 @@ function(Walls, Ceiling, Ground, Message, NavigationSly) {
     // VE.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 500, 1000 );
 
     // VE.camera.position.set(-274, -300, 199);
-    VE.camera.position.set(-2740, 300, 1990);
+    VE.camera.position.set(-2740, 0, 1990);
     // VE.camera.position.set(600, -300, 600);
 
     //  VE.camera.position.set(0,0-(VE.HallConfig.height/2 - 200/2),500);
@@ -407,13 +407,13 @@ $.get('/fethcAllBooths',function(data){
   VE.initEventHandling = (function() {
     var _vector = new THREE.Vector3,
       projector = new THREE.Projector(),
-      handleMouseDown, handleMouseMove, handleMouseUp;
+      handleMouseDown, handleMouseMove, handleMouseUp,handleWheel,handleWheelFirefox;
 
     handleMouseDown = function(evt) {
       var ray, intersections;
       // console.log(evt);
       // console.log(_vector);
-      switch (event.button) {
+      switch (evt.button) {
         case 0:
           if (VE.controls.activeLook) {
             VE.up = false;
@@ -554,11 +554,21 @@ $.get('/fethcAllBooths',function(data){
       }
 
     };
-
+    
+    handleWheel = function(evt) {
+      var cameraY = VE.camera.position.y + evt.wheelDelta/12;
+      VE.camera.position.set(-2740, cameraY, 1990);
+    };
+    handleWheelFirefox = function(evt) {
+      var cameraY = VE.camera.position.y + evt.detail* 3;
+      VE.camera.position.set(-2740, cameraY, 1990);
+    };
     return function() {
       VE.renderer.domElement.addEventListener('mousedown', handleMouseDown);
       VE.renderer.domElement.addEventListener('mousemove', handleMouseMove);
       VE.renderer.domElement.addEventListener('mouseup', handleMouseUp);
+      VE.renderer.domElement.addEventListener('mousewheel', handleWheel);
+      VE.renderer.domElement.addEventListener('DOMMouseScroll', handleWheelFirefox);
     };
   })();
 
