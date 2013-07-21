@@ -1,11 +1,13 @@
-define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'NavigationSly'],
+define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'NavigationSly'],
 
-  function(Walls, Ceiling, Ground, Message, NavigationSly) {
+  function(Gadget,MouseControl,Walls, Ceiling, Ground, Message, NavigationSly) {
     'use strict';
-    var VE = {};
+    window.VE = window.VE  || {};
+    // var VE = {};
     var user = {};
     var utils = {};
     utils.projector = new THREE.Projector();
+    user.products = [];
     VE.mouseVector = new THREE.Vector3();
     VE.ground = Ground;
     VE.ceiling = Ceiling;
@@ -213,9 +215,9 @@ define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'Navigation
       var cubeGeometry = new THREE.CubeGeometry(80, 80, 80);
       var cube = new THREE.Mesh(cubeGeometry, material);
       cube.position.set(-2160, 60, 1400);
-      console.log(cube.material);
+      // console.log(cube.material);
       VE.scene.add(cube);
-      VE.blocks.push(cube);
+      user.products.push(cube);
 
       // var outlineMaterial2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
       // var outlineMesh2 = new THREE.Mesh( cubeGeometry, outlineMaterial2 );
@@ -236,7 +238,7 @@ define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'Navigation
       });
 
 
-
+      VE.initEventHandling = MouseControl(VE);
       VE.initEventHandling();
       // first render
       VE.renderer.render(VE.scene, VE.camera);
@@ -274,12 +276,12 @@ define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'Navigation
       VE.controls.update(VE.clock.getDelta());
       VE.renderer.render(VE.scene, VE.camera);
 
-      /************************object outline***************************************************/
+      /************************object transparent***************************************************/
       // var utils.INTERSECTED;
       
       utils.raycaster = utils.projector.pickingRay(VE.mouseVector.clone(), VE.camera);
       // var intersects = raycaster.intersectObjects( VE.scene.children );
-      utils.intersects = utils.raycaster.intersectObjects(VE.blocks);
+      utils.intersects = utils.raycaster.intersectObjects(user.products);
 
       if (utils.intersects.length > 0) {
 
@@ -289,7 +291,7 @@ define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'Navigation
 
           utils.INTERSECTED = utils.intersects[0].object;//visible transparent opacity
           utils.INTERSECTED.current_opacity = utils.INTERSECTED.material.opacity ;
-          utils.INTERSECTED.material.opacity = 0.8;
+          utils.INTERSECTED.material.opacity = 0.7;
           utils.INTERSECTED.current_transparent = utils.INTERSECTED.material.transparent ;
           utils.INTERSECTED.material.transparent = true;
           // utils.INTERSECTED.currentHex = utils.INTERSECTED.material.emissive.getHex();
@@ -313,179 +315,9 @@ define(['ve/veWall', 've/veCeiling', 've/veGround', 'views/message', 'Navigation
 
 
 
-    VE.desk = function(xp) {
-
-      // var combined = new THREE.Geometry();
-      var top = new Physijs.BoxMesh(new THREE.CubeGeometry(200, 10, 200), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      top.position.x = xp;
-      top.position.y = -260;
-      top.position.z = 1500;
-      // THREE.GeometryUtils.merge( combined, top );
-      var _leg = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 100, 10), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      _leg.position.x = -100;
-      _leg.position.y = -50;
-      _leg.position.z = -100;
-      top.add(_leg);
-      // THREE.GeometryUtils.merge( combined, _leg );
 
 
-      _leg = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 100, 10), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      _leg.position.x = 100;
-      _leg.position.y = -50;
-      _leg.position.z = -100;
-      top.add(_leg);
 
-      _leg = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 100, 10), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      _leg.position.x = 100;
-      _leg.position.y = -50;
-      _leg.position.z = 100;
-      top.add(_leg);
-
-      _leg = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 100, 10), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      _leg.position.x = -100;
-      _leg.position.y = -50;
-      _leg.position.z = 100;
-      top.add(_leg);
-
-      VE.blocks.push(top);
-      VE.scene.add(top);
-      // VE.blocks.push(box);
-      // VE.scene.add( box );
-    };
-
-    VE.booths = function(xp) {
-
-      var wall_material = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({
-          map: THREE.ImageUtils.loadTexture('/textures/wall.jpg')
-        }), .8, // high friction
-        .4 // low restitution
-      );
-      wall_material.map.wrapS = wall_material.map.wrapT = THREE.RepeatWrapping;
-      wall_material.map.repeat.set(1, 10);
-
-
-      var wall_material_back = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({
-          map: THREE.ImageUtils.loadTexture('/textures/wall_back.jpeg')
-        }), .8, // high friction
-        .4 // low restitution
-      );
-      wall_material_back.map.wrapS = wall_material_back.map.wrapT = THREE.RepeatWrapping;
-      wall_material_back.map.repeat.set(1, 1);
-
-      var top = new Physijs.BoxMesh(new THREE.CubeGeometry(400, 10, 400), new THREE.MeshBasicMaterial({
-        color: 0x888888
-      }));
-      top.position.x = xp;
-      top.position.y = 80;
-      console.log(top.position.y);
-      //back wall
-      var _wall = new Physijs.BoxMesh(new THREE.CubeGeometry(400, 400, 10), wall_material_back);
-      _wall.position.y = -200;
-      _wall.position.z = -200;
-      top.add(_wall);
-      VE.blocks.push(_wall);
-
-      //left wall
-      _wall = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 400, 400), wall_material);
-      _wall.position.x = -200;
-      _wall.position.y = -200;
-
-      top.add(_wall);
-      VE.blocks.push(_wall);
-
-
-      //right wall
-      _wall = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 400, 400), wall_material);
-      _wall.position.x = 200;
-      _wall.position.y = -200;
-      top.add(_wall);
-      VE.blocks.push(_wall);
-
-      VE.blocks.push(top);
-      VE.scene.add(top);
-    };
-
-    VE.initEventHandling = (function() {
-      var handleMouseDown, handleMouseMove, handleMouseUp, handleWheel, handleWheelFirefox;
-      var projector = new THREE.Projector();
-      
-
-      handleMouseDown = function(evt) {
-        var ray, intersections;
-        switch (evt.button) {
-          case 0:
-            VE.mouseVector.x = 2 * (evt.clientX / window.innerWidth) - 1;
-            mouseVector.y = 1 - 2 * (evt.clientY / window.innerHeight);
-            var raycaster = projector.pickingRay(mouseVector.clone(), VE.camera);
-            // var intersects = raycaster.intersectObjects( VE.scene.children );
-            var intersects = raycaster.intersectObjects(VE.scene.children);
-
-            // console.log(intersects);
-            if (intersects.length > 0) {
-              console.log(intersects[0]);
-            }
-            break;
-          case 1:
-            break;
-          case 2:
-            break;
-        }
-      };
-
-      handleMouseMove = function(evt) {
-        VE.mouseVector.x = 2 * (evt.clientX / window.innerWidth) - 1;
-        VE.mouseVector.y = 1 - 2 * (evt.clientY / window.innerHeight);
-        // var raycaster = projector.pickingRay(mouseVector.clone(), VE.camera);
-        // var intersects = raycaster.intersectObjects( VE.scene.children );
-        // var intersects = raycaster.intersectObjects(VE.blocks);
-
-        // console.log(intersects);
-        // console.log(VE.mouseVector);
-        // if(intersects.length > 0){
-        //   console.log(intersects[0]);
-        // var targetObject = intersects[0];
-        // var outlineMaterial2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
-        // var outlineMesh2 = new THREE.Mesh( targetObject, outlineMaterial2 );
-        // outlineMesh2.position = cube.position;
-        // outlineMesh2.scale.multiplyScalar(1.05);
-        // VE.scene.add( outlineMesh2 );
-        // }
-
-
-      };
-
-      handleMouseUp = function(evt) {
-
-      };
-
-      handleWheel = function(evt) {
-        var cameraY = VE.camera.position.y + evt.wheelDelta / 12;
-        VE.camera.position.set(-2740, cameraY, 1990);
-      };
-      handleWheelFirefox = function(evt) {
-        var cameraY = VE.camera.position.y + evt.detail * 3;
-        VE.camera.position.set(-2740, cameraY, 1990);
-      };
-      return function() {
-        VE.renderer.domElement.addEventListener('mousedown', handleMouseDown);
-        VE.renderer.domElement.addEventListener('mousemove', handleMouseMove);
-        VE.renderer.domElement.addEventListener('mouseup', handleMouseUp);
-        VE.renderer.domElement.addEventListener('mousewheel', handleWheel);
-        VE.renderer.domElement.addEventListener('DOMMouseScroll', handleWheelFirefox);
-      };
-    })();
 
     return VE;
   });
