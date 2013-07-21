@@ -82,8 +82,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		}
 
-		event.preventDefault();
-		event.stopPropagation();
+		// event.preventDefault();
+		// event.stopPropagation();
 		switch( event.button) {
 			case 1:
 				this.activeLook = !this.activeLook;
@@ -107,8 +107,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.onMouseUp = function ( event ) {
 
-		event.preventDefault();
-		event.stopPropagation();
+		// event.preventDefault();
+		// event.stopPropagation();
 
 		if ( this.activeLook ) {
 

@@ -22,9 +22,11 @@ module.exports = function(app, models) {
 	});
  
 	app.get('/data/models', function(req, res) {
-		models.WebModel.findAll("517cfa42faa4dcf41500000a", function(models_data) {
+		if (req.session.loggedIn) {
+		models.WebModel.findAll(req.session.accountId, function(models_data) {
 			res.send(models_data);
 		});
+	}
 	});
 
 

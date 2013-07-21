@@ -102,6 +102,7 @@ module.exports = function(app, config, mongoose, gridfs) {
   var findAll = function(user_id, callback) {
     // var searchRegex = new RegExp(searchStr, 'i');
     Model.find({userId:user_id}, function(err, doc) {
+      if(err) return console.log(err);
       callback(doc);
     });
   };
