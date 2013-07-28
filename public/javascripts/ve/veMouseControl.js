@@ -5,6 +5,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
     var initEventHandling = function(VE) {
       var handleMouseDown, handleMouseMove, handleMouseUp, handleWheel, handleWheelFirefox;
       var projector = new THREE.Projector();
+      var x,y,z,id;
       
 
       handleMouseDown = function(evt) {
@@ -89,8 +90,15 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
       };
 
       handleMouseUp = function(evt) {
-        utils.selectedProduct.updatePositiontoServer(utils.selectedProduct.position.x,utils.selectedProduct.position.y,utils.selectedProduct.position.z);
+        if(utils.selectedProduct != null) {
+        x = utils.selectedProduct.position.x;
+        y = utils.selectedProduct.position.y;
+        z = utils.selectedProduct.position.z;
+        id = utils.selectedProduct.id;
+        console.log(utils.selectedProduct);
+        utils.selectedProduct.updatePositiontoServer(x,y,z,id);
         utils.selectedProduct = null;
+      }
       };
 
       handleWheel = function(evt) {

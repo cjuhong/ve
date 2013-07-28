@@ -31,9 +31,26 @@ module.exports = function(app, models) {
 
 
 	app.post('/booth/updateBoothPosition/:id', function(req, res) {
-		// models.WebModel.generateBooth();
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var xp = req.body.xp;
+		var zp = req.body.zp;
+		models.WebModel.findOneBooth(id,function(booth){
+			console.log(booth);
+			booth.x = xp;
+			booth.z = zp;
+			booth.save(function(err){
+				if(err){
+					console.log(err);
+					return;
+				}
+			});
+
+		});
 		res.send("ok");
-		console.log("backend");
+		// console.log("backend");
+		// console.log(id);
+		// console.log(req.body);
 	});
 
 	// models.WebModel.generateBooth('517cfa42faa4dcf41500000a','aaa', -800,200,100);

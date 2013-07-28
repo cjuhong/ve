@@ -113,10 +113,24 @@ module.exports = function(app, config, mongoose, gridfs) {
     });
   };
 
+  var findOneBooth = function(id,callback) {
+    // var searchRegex = new RegExp(searchStr, 'i');
+    // Booth.find({}, function(err, doc) {
+    //   callback(doc);
+    // });
+
+    Booth.findOne({
+      _id: id
+    }, function(err, doc) {
+      callback(doc);
+    });
+  };
+
   return {
     uploadModel: uploadModel,
     findAll:findAll,
     generateBooth: generateBooth,
-    fethcAllBooths: fethcAllBooths
+    fethcAllBooths: fethcAllBooths,
+    findOneBooth: findOneBooth
   };
 };

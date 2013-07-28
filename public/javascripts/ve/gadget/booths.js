@@ -2,7 +2,9 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 	'use strict';
 	window.VE = window.VE || {};
 
-	var booths = function(xp) {
+	var booths = function(xp,zp,id) {
+		var zp = typeof zp !== 'undefined' ? zp : -200;
+		var id = typeof id !== 'undefined' ? id : "1111111";
 
 		var wall_material = Physijs.createMaterial(
 			new THREE.MeshLambertMaterial({
@@ -50,7 +52,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 
 		var back_wall = new Physijs.BoxMesh(new THREE.CubeGeometry(400, 400, 10), wall_material_back);
 		back_wall.position.y = -160;
-		back_wall.position.z = -200;
+		back_wall.position.z = zp;
 		back_wall.position.x = xp;
 
 		var left_wall = new Physijs.BoxMesh(new THREE.CubeGeometry(10, 400, 400), wall_material);
@@ -68,8 +70,9 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		top_wall.position.y = 205;
 		back_wall.add(top_wall);
 		
-		back_wall.updatePositiontoServer = function(x,y,z){
-			$.post('/booth/updateBoothPosition/11111',function(data){
+		back_wall.id = id;
+		back_wall.updatePositiontoServer = function(x,y,z,id){
+			$.post('/booth/updateBoothPosition/'+id,{'xp':x,'zp':z},function(data){
 			  console.log(data);
 			});
 			console.log("updatePositiontoServer " +"x: " + x +"z: " + z);
