@@ -18,6 +18,9 @@ define(['router','NavigationSly','models/ContactCollection','VeSockets'],
           $('#login').fadeOut();
           $('#contacts').fadeIn();
           $('#management').fadeIn();
+          window.user = window.user  || {};
+          user.role = sessionStorage.role;
+          user.userId  = sessionStorage.userId;
           switch(sessionStorage.role) {
             case 'vistor':
               $('#exhibitor').fadeOut();

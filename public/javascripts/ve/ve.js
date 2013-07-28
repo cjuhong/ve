@@ -3,11 +3,22 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
   function(Gadget,MouseControl,Walls, Ceiling, Ground, Message, NavigationSly) {
     'use strict';
     window.VE = window.VE  || {};
-    // var VE = {};
-    var user = {};
-    var utils = {};
+    window.user = window.user  || {};
+    window.utils = window.utils  || {};
+
     utils.projector = new THREE.Projector();
+    utils.intersect_plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(5500, 4000),
+      new THREE.MeshBasicMaterial({
+        opacity: 0,
+        transparent: true,
+      }));
+
     user.products = [];
+    user.booths = [];
+    user.belongs = {};
+
+
     VE.mouseVector = new THREE.Vector3();
     VE.ground = Ground;
     VE.ceiling = Ceiling;
@@ -89,18 +100,11 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         });
       VE.camera.lookAt(VE.scene.position);
 
-      VE.intersect_plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(5500, 4000),
-        new THREE.MeshBasicMaterial({
-          opacity: 0,
-          transparent: true,
-          color: 0x8ef877
-        }));
+
       // console.log(VE.intersect_plane instanceof Physijs.BoxMesh);
-      VE.intersect_plane.rotation.x = Math.PI / -2;
-      // VE.intersect_plane.position.y = -300;
-      // console.log(VE.intersect_plane.position);
-      VE.scene.add(VE.intersect_plane);
+      utils.intersect_plane.rotation.x = Math.PI / -2;
+      VE.scene.add(utils.intersect_plane);
+      console.log(utils.intersect_plane.position);
 
 
       VE.scene.add(VE.ground);
@@ -213,9 +217,14 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       // VE.scene.add( outlineMesh1 );
 
       var cubeGeometry = new THREE.CubeGeometry(80, 80, 80);
+      var cube2 = new THREE.Mesh(cubeGeometry, material);
+      cube2.position.set(100, 0, 0);
+
+      var cubeGeometry = new THREE.CubeGeometry(80, 80, 80);
       var cube = new THREE.Mesh(cubeGeometry, material);
-      cube.position.set(-2160, 60, 1400);
+      cube.position.set(-2160, -160, 1400);
       // console.log(cube.material);
+      cube.add(cube2);
       VE.scene.add(cube);
       user.products.push(cube);
 
@@ -281,28 +290,37 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       
       utils.raycaster = utils.projector.pickingRay(VE.mouseVector.clone(), VE.camera);
       // var intersects = raycaster.intersectObjects( VE.scene.children );
-      utils.intersects = utils.raycaster.intersectObjects(user.products);
+      // utils.intersects = utils.raycaster.intersectObjects(user.products);
+      if(user.role == "organizer"){
+        utils.sceneChildren = VE.scene.children.slice(7,-1);
+        utils.intersects = utils.raycaster.intersectObjects(utils.sceneChildren);
+        // utils.intersects = utils.raycaster.intersectObjects(VE.scene.children);
+      }else if(user.role == "exhibitor"){
+        utils.intersects = utils.raycaster.intersectObjects(user.products);
+      }else{
+        utils.intersects = utils.raycaster.intersectObjects(user.products);
+      }
 
       if (utils.intersects.length > 0) {
 
         if (utils.INTERSECTED != utils.intersects[0].object) {
-
-          if (utils.INTERSECTED) utils.INTERSECTED.material.emissive.setHex(utils.INTERSECTED.currentHex);
+          if(utils.INTERSECTED){
+            utils.INTERSECTED.material.opacity = utils.INTERSECTED.current_opacity;
+          }
 
           utils.INTERSECTED = utils.intersects[0].object;//visible transparent opacity
           utils.INTERSECTED.current_opacity = utils.INTERSECTED.material.opacity ;
+          // utils.INTERSECTED.current_transparent = utils.INTERSECTED.material.transparent ;
+          // utils.INTERSECTED.material.transparent = true;
           utils.INTERSECTED.material.opacity = 0.7;
-          utils.INTERSECTED.current_transparent = utils.INTERSECTED.material.transparent ;
-          utils.INTERSECTED.material.transparent = true;
-          // utils.INTERSECTED.currentHex = utils.INTERSECTED.material.emissive.getHex();
-          // utils.INTERSECTED.material.emissive.setHex(0xff0000);
+
         }
 
       } else {
 
         if (utils.INTERSECTED != null) {
           utils.INTERSECTED.material.opacity = utils.INTERSECTED.current_opacity;
-          utils.INTERSECTED.material.transparent = utils.INTERSECTED.current_transparent;
+          // utils.INTERSECTED.material.transparent = utils.INTERSECTED.current_transparent;
         }
 
         utils.INTERSECTED = null;

@@ -14,6 +14,9 @@ define(['VeView', 'text!templates/login.html'], function(VeView, loginTemplate) 
 					console.log(data.id+ " " + data.role + " logging");
 					sessionStorage.role = data.role;
 					sessionStorage.userId = data.id;
+					window.user = window.user  || {};
+					user.role = sessionStorage.role;
+					user.userId  = sessionStorage.userId;
 					socketEvents.trigger('app:loggedin');
 					$('#logout').fadeIn();
 					$('#search').fadeIn();

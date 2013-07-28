@@ -44,7 +44,7 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
         // // boxxx.position.y = 200;
         // boxxx.position.z = 1500;
         // VE.scene.add(boxxx);
-        var x = -2080 + i*420;
+        var x = -2080 + i*435;
         xp[i]=x;
         VE.booths(x);
       }
