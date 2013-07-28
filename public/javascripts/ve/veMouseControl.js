@@ -10,8 +10,10 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
       handleMouseDown = function(evt) {
         // console.log(sessionStorage.role);
         // user.role = sessionStorage.role;
-        console.log(VE.scene.children);
-        console.log(utils.sceneChildren);
+
+        // console.log(VE.scene.children);
+
+        // console.log(utils.sceneChildren);
         // $.ajax("/account/authenticated", {
         //   method: "GET",VE.scene.children
         //   success: function(data) {
@@ -29,7 +31,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
             utils.selectedProducts = utils.raycaster.intersectObjects(user.booths);
             if (utils.selectedProducts.length > 0) {
               utils.selectedProduct = utils.selectedProducts[0].object;
-              // console.log(utils.selectedProducts[0].point);
+              console.log(utils.selectedProducts[0]);
               utils.intersect_plane.position.y = utils.selectedProduct.position.y;
             }
             // console.log(utils.intersect_plane.position);
@@ -72,13 +74,13 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
         // }
         utils.raycaster = utils.projector.pickingRay(VE.mouseVector.clone(), VE.camera);
         utils.testObject = utils.raycaster.intersectObject(utils.intersect_plane);
-        if(utils.selectedProduct != null){
-          console.log(utils.testObject[0].point);
+        if((utils.selectedProduct != null) && (utils.testObject.length > 0)){
           if(utils.selectedProduct instanceof Physijs.BoxMesh ){
             utils.selectedProduct.__dirtyPosition = true;
           }
             utils.selectedProduct.position.x = utils.testObject[0].point.x;
             utils.selectedProduct.position.z = utils.testObject[0].point.z;
+            
           // utils.selectedProduct.__dirtyPosition = true;
 
         }
@@ -87,6 +89,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
       };
 
       handleMouseUp = function(evt) {
+        utils.selectedProduct.updatePositiontoServer(utils.selectedProduct.position.x,utils.selectedProduct.position.y,utils.selectedProduct.position.z);
         utils.selectedProduct = null;
       };
 

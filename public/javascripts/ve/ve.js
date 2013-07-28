@@ -104,7 +104,8 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       // console.log(VE.intersect_plane instanceof Physijs.BoxMesh);
       utils.intersect_plane.rotation.x = Math.PI / -2;
       VE.scene.add(utils.intersect_plane);
-      console.log(utils.intersect_plane.position);
+      
+      // console.log(utils.intersect_plane.position);
 
 
       VE.scene.add(VE.ground);

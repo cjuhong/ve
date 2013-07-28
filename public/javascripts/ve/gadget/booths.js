@@ -49,7 +49,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		// VE.scene.add(top);
 
 		var back_wall = new Physijs.BoxMesh(new THREE.CubeGeometry(400, 400, 10), wall_material_back);
-		back_wall.position.y = -200;
+		back_wall.position.y = -160;
 		back_wall.position.z = -200;
 		back_wall.position.x = xp;
 
@@ -68,6 +68,13 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		top_wall.position.y = 205;
 		back_wall.add(top_wall);
 		
+		back_wall.updatePositiontoServer = function(x,y,z){
+			$.post('/booth/updateBoothPosition/11111',function(data){
+			  console.log(data);
+			});
+			console.log("updatePositiontoServer " +"x: " + x +"z: " + z);
+		};
+
 		VE.scene.add(back_wall);
 		user.booths.push(back_wall);
 

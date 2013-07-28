@@ -30,8 +30,10 @@ module.exports = function(app, models) {
 	});
 
 
-	app.post('/booth/generateBooth', function(req, res) {
+	app.post('/booth/updateBoothPosition/:id', function(req, res) {
 		// models.WebModel.generateBooth();
+		res.send("ok");
+		console.log("backend");
 	});
 
 	// models.WebModel.generateBooth('517cfa42faa4dcf41500000a','aaa', -800,200,100);
