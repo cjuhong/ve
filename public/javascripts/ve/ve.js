@@ -341,10 +341,5 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
     };
 
 
-
-
-
-
-
     return VE;
   });
