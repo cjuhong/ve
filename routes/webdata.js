@@ -1,4 +1,4 @@
-module.exports = function(app, models) {
+module.exports = function(app, models,sio) {
 	var gridfs = models.gridfs;
 	app.post('/data', function(req, res) {
 		if (req.body.dataType == "model") {
@@ -65,7 +65,11 @@ module.exports = function(app, models) {
 		var xps = req.body.xp;
 		if (num > 0) {
 			for (var i = 0; i < num; i++) {
-				models.WebModel.generateBooth(req.session.accountId, req.session.username, xps[i], 200, 100);
+				var newBooth = models.WebModel.generateBooth(req.session.accountId, req.session.username, xps[i], 200, 100);
+				console.log("new");
+				console.log(newBooth);
+				console.log("new");
+				sio.sockets.emit("newBooth",newBooth);
 			}
 		}
 	});

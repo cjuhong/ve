@@ -1,4 +1,4 @@
-module.exports = function(app, models) {
+module.exports = function(app, models,sio) {
 
 	app.post('/login', function(req, res) {
 		console.log('login request');

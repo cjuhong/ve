@@ -1,9 +1,9 @@
-module.exports = function(app, models) {
-	var io = require('socket.io');
+module.exports = function(app, models,sio) {
+
 	var utils = require('connect').utils;
 	var cookie = require('cookie');
 	var Session = require('connect').middleware.session.Session;
-	var sio = io.listen(app.server);
+	
 	sio.configure(function() {
 		app.isAccountOnline = function(accountId) {
 			var clients = sio.sockets.clients(accountId);

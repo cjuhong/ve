@@ -99,6 +99,7 @@ module.exports = function(app, config, mongoose, gridfs) {
           userName:user_name
         });
         booth.save();
+        return booth;
     console.log('Save command was sent');
   };
   var uploadCallback = function(err) {

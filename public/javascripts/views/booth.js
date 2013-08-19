@@ -46,7 +46,7 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
         // VE.scene.add(boxxx);
         var x = -2080 + i*435;
         xp[i]=x;
-        VE.booths(x);
+        // VE.booths(x);
       }
       $.post('/generateBooth/'+num,{'xp':xp},function(){
         console.log(data);

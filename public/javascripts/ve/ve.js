@@ -247,6 +247,14 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
       });
 
+      socket.on("newBooth", function(data) {
+
+        // console.log(socket.socket.sessionid);
+        // console.log(data);
+        VE.booths(data.x,data.z,data._id);
+
+      });
+
 
       VE.initEventHandling = MouseControl(VE);
       VE.initEventHandling();

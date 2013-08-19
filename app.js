@@ -20,6 +20,8 @@ var gridfs = require('./gridfs/gridfs')(mongoose);
 // console.log(gridfs);
 // var Account = require('./models/Account')(config, mongoose, nodemailer);
 var app = express();
+var io = require('socket.io');
+
 app.sessionStore = new MemoryStore();
 
 app.server = http.createServer(app);
@@ -54,7 +56,7 @@ app.configure(function() {
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.limit('1mb'));
 });
-
+var sio = io.listen(app.server);
 // Create an event dispatcher
 var eventDispatcher = new events.EventEmitter();
 app.addEventListener = function(eventName, callback) {
@@ -80,7 +82,7 @@ app.get('/', function(req, res){
 fs.readdirSync('routes').forEach(function(file) {
   if ( file[0] == '.' ) return;
   var routeName = file.substr(0, file.indexOf('.'));
-  require('./routes/' + routeName)( app, models);
+  require('./routes/' + routeName)( app, models,sio);
 });
 
 
