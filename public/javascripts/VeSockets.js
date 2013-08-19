@@ -7,6 +7,7 @@ function(sio, ContactCollection, ChatView) {
 		var connectSocket = function(socketAccountId) {
 			accountId = socketAccountId;
 			socket = sio.connect();
+			window.socket =  socket;
 			socket.on('connect_failed', function(reason) {
 				console.error('unable to connect', reason);
 			}).on('connect', function() {

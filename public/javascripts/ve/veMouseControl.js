@@ -97,6 +97,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
         id = utils.selectedProduct.id;
         console.log(utils.selectedProduct);
         utils.selectedProduct.updatePositiontoServer(x,y,z,id);
+        console.log("from update mouse x: " + x + " z: "+ z);
         utils.selectedProduct = null;
       }
       };

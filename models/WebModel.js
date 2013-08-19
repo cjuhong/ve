@@ -36,6 +36,15 @@ module.exports = function(app, config, mongoose, gridfs) {
     modelId: {
       type: mongoose.Schema.ObjectId,
     },
+    x:{
+      type: Number
+    },
+    y:{
+      type: Number
+    },
+    z:{
+      type: Number
+    },
     dataType: {
       type: String
     },

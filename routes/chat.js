@@ -75,6 +75,11 @@ module.exports = function(app, models) {
 					text: data.text
 				});
 			});
+
+			socket.on('updatePosition', function(data) {
+				// console.log(data);
+				sio.sockets.emit(data.id,data);
+			});
 		});
 	});
 };

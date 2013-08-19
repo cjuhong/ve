@@ -10,7 +10,7 @@ define(['router','NavigationSly','models/ContactCollection','VeSockets'],
       $.ajax("/account/authenticated", {
         method: "GET",
         success: function(data) {
-          // router.socketEvents.trigger('VEStart', data);
+          router.socketEvents.trigger('app:loggedin', sessionStorage.userId);
           $('#logout').fadeIn();
           $('#search').fadeIn();
           $('#booth').fadeIn();

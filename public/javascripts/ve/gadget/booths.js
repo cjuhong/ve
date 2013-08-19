@@ -2,6 +2,8 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 	'use strict';
 	window.VE = window.VE || {};
 
+	
+
 	var booths = function(xp,zp,id) {
 		var zp = typeof zp !== 'undefined' ? zp : -200;
 		var id = typeof id !== 'undefined' ? id : "1111111";
@@ -73,13 +75,29 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		back_wall.id = id;
 		back_wall.updatePositiontoServer = function(x,y,z,id){
 			$.post('/booth/updateBoothPosition/'+id,{'xp':x,'zp':z},function(data){
-			  console.log(data);
+			  // console.log(data);
 			});
-			console.log("updatePositiontoServer " +"x: " + x +"z: " + z);
+			// console.log("updatePositiontoServer " +"x: " + x +"z: " + z);
+			// console.log("message");
+			socket.emit("updatePosition", {"x": x, "y":y, "z":z,"id":id});
+			// socket.on(id, function(data) {
+			// 	console.log(data);
+			// });
 		};
 
 		VE.scene.add(back_wall);
 		user.booths.push(back_wall);
+		socket.on(id, function(data) {
+			// back_wall.updatePositiontoServer(data.x,data.y,data.z,data.id);
+			back_wall.__dirtyPosition = true;
+			back_wall.position.z = data.z;
+			back_wall.position.x = data.x;
+			// console.log("position change");
+			// console.log(back_wall.position.z);
+			// console.log(back_wall.position.x);
+			console.log("from socket x: " + back_wall.position.x + " z: "+ back_wall.position.z);
+
+		});
 
 	};
 	return booths;
