@@ -66,10 +66,54 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		right_wall.position.x = 205;
 		right_wall.position.z = 195;
 		back_wall.add(right_wall);
+		/******************************************************************************************/
+		var x = document.createElement("canvas");
+		var xc = x.getContext("2d");
 
-		var top_wall = new Physijs.BoxMesh(new THREE.CubeGeometry(420, 10, 400), new THREE.MeshBasicMaterial({ color: 0x888888 }));
+
+		// xc.fillStyle = "red";
+		// xc.fillRect(0, 0, 128, 128);
+
+		xc.fillStyle = "orange";
+		xc.font = "60pt monospace";
+		xc.fillText(12, 64, 64);
+
+		var xm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(x), transparent: false });
+		xm.map.needsUpdate = true;
+		xm.map.wrapS = xm.map.wrapT = THREE.RepeatWrapping;
+		xm.map.repeat.set(1, 1);
+
+		var cubeMaterials = [
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+			xm,
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			})
+		];
+
+		// Create a MeshFaceMaterial, which allows the cube to have different materials on 
+		// each face  0x00FF00
+		var cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
+
+		// Create a mesh and insert the geometry and the material. Translate the whole mesh 
+		// by 1.5 on the x axis and by 4 on the z axis and add the mesh to the scene. 
+		// cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+		//new THREE.MeshBasicMaterial({ color: 0x888888 })
+		/******************************************************************************************/
+		var top_wall = new Physijs.BoxMesh(new THREE.CubeGeometry(420, 20, 400), cubeMaterial);
 		top_wall.position.z = 195;
-		top_wall.position.y = 205;
+		top_wall.position.y = 210;
 		back_wall.add(top_wall);
 		
 		back_wall.id = id;
@@ -86,6 +130,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		};
 
 		VE.scene.add(back_wall);
+		utils.sceneChildren.push(back_wall);
 		user.booths.push(back_wall);
 		socket.on(id, function(data) {
 			// back_wall.updatePositiontoServer(data.x,data.y,data.z,data.id);

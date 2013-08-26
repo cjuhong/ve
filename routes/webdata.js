@@ -66,9 +66,9 @@ module.exports = function(app, models,sio) {
 		if (num > 0) {
 			for (var i = 0; i < num; i++) {
 				var newBooth = models.WebModel.generateBooth(req.session.accountId, req.session.username, xps[i], 200, 100);
-				console.log("new");
-				console.log(newBooth);
-				console.log("new");
+				// console.log("new");
+				// console.log(newBooth);
+				// console.log("new");
 				sio.sockets.emit("newBooth",newBooth);
 			}
 		}

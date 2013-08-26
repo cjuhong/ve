@@ -64,6 +64,9 @@ module.exports = function(app, config, mongoose, gridfs) {
     z:{
       type: Number
     },
+    booth_num:{
+      type: Number
+    },
     userId: {
       type: mongoose.Schema.ObjectId,
     },

@@ -13,6 +13,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         opacity: 0,
         transparent: true,
       }));
+    utils.sceneChildren = [];
 
     user.products = [];
     user.booths = [];
@@ -169,6 +170,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
             // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
             object.scale.set(2.0, 2.0, 2.0);
             VE.scene.add(object);
+            utils.sceneChildren.push(object);
           });
         });
       });
@@ -228,6 +230,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       cube.add(cube2);
       VE.scene.add(cube);
       user.products.push(cube);
+      utils.sceneChildren.push(cube);
 
       // var outlineMaterial2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
       // var outlineMesh2 = new THREE.Mesh( cubeGeometry, outlineMaterial2 );
@@ -241,7 +244,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       $.get('/fethcAllBooths', function(data) {
 
         data.forEach(function(value) {
-          console.log(value);
+          // console.log(value);
           VE.booths(value.x,value.z,value._id);
         });
 
@@ -301,7 +304,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       // var intersects = raycaster.intersectObjects( VE.scene.children );
       // utils.intersects = utils.raycaster.intersectObjects(user.products);
       if(user.role == "organizer"){
-        utils.sceneChildren = VE.scene.children.slice(7,-1);
+        // utils.sceneChildren = VE.scene.children.slice(7,-1);
         utils.intersects = utils.raycaster.intersectObjects(utils.sceneChildren);
         // utils.intersects = utils.raycaster.intersectObjects(VE.scene.children);
       }else if(user.role == "exhibitor"){
