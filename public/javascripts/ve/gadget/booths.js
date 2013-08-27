@@ -75,8 +75,8 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		// xc.fillRect(0, 0, 128, 128);
 
 		xc.fillStyle = "orange";
-		xc.font = "60pt monospace";
-		xc.fillText(12, 64, 64);
+		xc.font = "15pt monospace";
+		xc.fillText(id, 16, 64);
 
 		var xm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(x), transparent: false });
 		xm.map.needsUpdate = true;
@@ -90,13 +90,15 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 			new THREE.MeshBasicMaterial({
 				color: 0x888888
 			}),
-			new THREE.MeshBasicMaterial({
-				color: 0x888888
-			}),
-			new THREE.MeshBasicMaterial({
-				color: 0x888888
-			}),
 			xm,
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+
+			new THREE.MeshBasicMaterial({
+				color: 0x888888
+			}),
+			
 			new THREE.MeshBasicMaterial({
 				color: 0x888888
 			})

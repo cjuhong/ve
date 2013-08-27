@@ -1,5 +1,5 @@
-define(['text!templates/desk_generate.html','text!templates/booth_generate.html','text!templates/booth.html', 'VeView','ve/ve'],
-  function(deskGenerateTemplate,boothGenerateTemplate,boothTemplate, VeView,VE) {
+define(['text!templates/assign.html','text!templates/desk_generate.html','text!templates/booth_generate.html','text!templates/booth.html', 'VeView','ve/ve'],
+  function(assignTemplate,deskGenerateTemplate,boothGenerateTemplate,boothTemplate, VeView,VE) {
   var boothView = VeView.extend({
     el: $('#boothDiv'),
     // initialize: function(options) {
@@ -16,6 +16,7 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
       // "click .modelNav" : "modelUpload",
       "click .booth_generate" : "booth_generate",
       "click .desk_generate" : "desk_generate",
+      "click .assign" : "assign",
       // "click .allNav" : "listAll",
       "click button.booth" : "generate",
       "click button.desk" : "generateDesk"
@@ -30,6 +31,24 @@ define(['text!templates/desk_generate.html','text!templates/booth_generate.html'
     },
     desk_generate: function(event){
       $('.navList').html(deskGenerateTemplate);
+    },
+    assign: function(event){
+      $('.navList').html(assignTemplate);
+      var boothData = "";
+      var that = this;
+      $.get('/fethcAllBooths', function(data) {
+
+        data.forEach(function(value) {
+          console.log(value);
+
+          boothData = "<p>" + boothData + value.userName + "</p>";
+        });
+
+        that.$('#boothList').html(boothData+ boothData + boothData);
+      });
+
+
+      
     },
     booth_generate : function(event) {
       $('.navList').html(boothGenerateTemplate);
