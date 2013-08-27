@@ -245,7 +245,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
         data.forEach(function(value) {
           // console.log(value);
-          VE.booths(value.x,value.z,value._id);
+          VE.booths(value);
         });
 
       });
@@ -254,7 +254,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
         // console.log(socket.socket.sessionid);
         // console.log(data);
-        VE.booths(data.x,data.z,data._id);
+        VE.booths(data);
 
       });
 

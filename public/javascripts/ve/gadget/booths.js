@@ -4,7 +4,8 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 
 	
 
-	var booths = function(xp,zp,id) {
+	var booths = function(boothData) {
+		var xp=boothData.x,zp=boothData.z,id=boothData._id;
 		var zp = typeof zp !== 'undefined' ? zp : -200;
 		var id = typeof id !== 'undefined' ? id : "1111111";
 
@@ -75,8 +76,15 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		// xc.fillRect(0, 0, 128, 128);
 
 		xc.fillStyle = "orange";
-		xc.font = "15pt monospace";
-		xc.fillText(id, 16, 64);
+		
+		if(  (boothData.booth_num != "") && (boothData.booth_num != undefined) ){
+			xc.font = "90pt monospace";
+			xc.fillText(boothData.booth_num, 32, 64);
+		}else{
+			xc.font = "15pt monospace";
+			xc.fillText(id, 16, 64);
+		}
+		
 
 		var xm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(x), transparent: false });
 		xm.map.needsUpdate = true;

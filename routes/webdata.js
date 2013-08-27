@@ -30,6 +30,30 @@ module.exports = function(app, models,sio) {
 	});
 
 
+	app.post('/booth/updateBooth/:id', function(req, res) {
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var exhibitor = req.body.exhibitor;
+		var number = req.body.number;
+		models.WebModel.findOneBooth(id,function(booth){
+			booth.userId = exhibitor;
+			booth.booth_num = number;
+			booth.save(function(err){
+				if(err){
+					console.log(err);
+					return;
+				}
+			});
+			console.log(booth);
+			// sio.sockets.emit("updateBooth",booth);
+
+		});
+		res.send("ok");
+		// console.log("backend");
+		// console.log(id);
+		// console.log(req.body);
+	});
+
 	app.post('/booth/updateBoothPosition/:id', function(req, res) {
 		// models.WebModel.generateBooth();findOneBooth
 		var id = req.params.id;

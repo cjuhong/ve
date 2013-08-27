@@ -173,6 +173,15 @@ module.exports = function(app, config, mongoose, nodemailer) {
       callback(doc);
     });
   };
+
+  var findAllExhibitors = function(callback) {
+    Account.find({
+      role: "exhibitor"
+    }, function(err, doc) {
+      callback(doc);
+    });
+  };
+
   var addContact = function(account, addcontact) {
     contact = {
       name: {
@@ -240,6 +249,7 @@ module.exports = function(app, config, mongoose, nodemailer) {
     addContact: addContact,
     removeContact: removeContact,
     login: login,
-    Account: Account
+    Account: Account,
+    findAllExhibitors: findAllExhibitors
   };
 }

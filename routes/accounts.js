@@ -14,6 +14,13 @@ module.exports = function(app, models,sio) {
 			res.send(account.activity);
 		});
 	});
+	//findAllExhibitors
+	app.get('/accounts/findAllExhibitors', function(req, res) {
+		// var accountId = req.params.id == 'me' ? req.session.accountId : req.params.id;
+		models.Account.findAllExhibitors( function(accounts) {
+			res.send(accounts);
+		});
+	});
 
 	app.get('/accounts/:id/status', function(req, res) {
 		var accountId = req.params.id == 'me' ? req.session.accountId : req.params.id;

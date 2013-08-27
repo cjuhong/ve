@@ -1,8 +1,22 @@
-<div class="">
-		<fieldset>
-				<legend >booth</legend> 
-				<div id="boothList">
-				</div>
-		</fieldset>
-		<button class="booth">generate</button>
-</div>
+<% data.forEach(function(booth) { %>
+	<fieldset>
+		<legend ><%= booth._id %></legend> 
+		<div id="boothList">
+			Exhibitor: <select>
+						<% exhibitors.forEach(function(exhibitor){ %>
+							<% if(booth.userId == exhibitor._id) { %>
+								<option value= <%= exhibitor._id  %> selected="selected" > <%= exhibitor.name.full %></option>
+							<% } else { %>
+								<option value= <%= exhibitor._id %>  > <%= exhibitor.name.full %></option>
+							<% } %>
+						<%  }); %>
+						</select>
+			<br>
+			Booth Number:<input type="text"  class="booth_num" value=<%= booth.booth_num  %> >
+			<input type="hidden"  value= <%= booth._id %> >
+			<button class="updateBooth">updateBooth</button>
+		</div>
+		
+	</fieldset>
+	
+<%  }); %>

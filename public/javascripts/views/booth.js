@@ -17,9 +17,13 @@ define(['text!templates/assign.html','text!templates/desk_generate.html','text!t
       "click .booth_generate" : "booth_generate",
       "click .desk_generate" : "desk_generate",
       "click .assign" : "assign",
+      //"click .updateBooth" : "updateBooth",
       // "click .allNav" : "listAll",
       "click button.booth" : "generate",
       "click button.desk" : "generateDesk"
+    },
+    updateBooth: function(event){
+      console.log(event);
     },
     generateDesk: function(event){
        var num = this.$('#desk_num').val();
@@ -39,16 +43,29 @@ define(['text!templates/assign.html','text!templates/desk_generate.html','text!t
       $.get('/fethcAllBooths', function(data) {
 
         data.forEach(function(value) {
-          console.log(value);
 
           boothData = "<p>" + boothData + value.userName + "</p>";
         });
 
-        that.$('#boothList').html(boothData+ boothData + boothData);
+        $.get('/accounts/findAllExhibitors', function(exhibitors) {
+          that.$('.navList').html(_.template(assignTemplate, { data: data , exhibitors: exhibitors}));
+
+          $('.updateBooth').click(function(){
+            // $(this).attr("disabled","disabled");
+            var brothers = $(this).siblings();
+            var selected_exhibitor = $(brothers[0]).val();
+            var exhibitor_number = $(brothers[2]).val();
+            var id = $(brothers[3]).val();
+            // console.log(selected_exhibitor);
+            // console.log(exhibitor_number);
+            // console.log(id);
+
+           $.post('/booth/updateBooth/'+id,{'exhibitor':selected_exhibitor,'number':exhibitor_number}).done(function(data){ });
+          });
+        });
+        
       });
 
-
-      
     },
     booth_generate : function(event) {
       $('.navList').html(boothGenerateTemplate);
