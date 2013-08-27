@@ -45,7 +45,7 @@ module.exports = function(app, models,sio) {
 				}
 			});
 			console.log(booth);
-			// sio.sockets.emit("updateBooth",booth);
+			sio.sockets.emit("updateBooth",booth);
 
 		});
 		res.send("ok");

@@ -79,14 +79,14 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		
 		if(  (boothData.booth_num != "") && (boothData.booth_num != undefined) ){
 			xc.font = "90pt monospace";
-			xc.fillText(boothData.booth_num, 32, 64);
+			xc.fillText(boothData.booth_num, 128, 128);
 		}else{
 			xc.font = "15pt monospace";
 			xc.fillText(id, 16, 64);
 		}
 		
-
-		var xm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(x), transparent: false });
+		var textureDynamic = new THREE.Texture(x);
+		var xm = new THREE.MeshBasicMaterial({ map: textureDynamic, transparent: false });
 		xm.map.needsUpdate = true;
 		xm.map.wrapS = xm.map.wrapT = THREE.RepeatWrapping;
 		xm.map.repeat.set(1, 1);
@@ -152,6 +152,33 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 			// console.log(back_wall.position.x);
 			console.log("from socket x: " + back_wall.position.x + " z: "+ back_wall.position.z);
 
+		});
+
+		//updateBooth
+		socket.on("updateBooth", function(boothData) {
+			if(boothData._id == id){
+				// console.log(id);
+				// var x = document.createElement("canvas");
+				// var xc = x.getContext("2d");
+
+
+				// xc.fillStyle = "red";
+				// xc.fillRect(0, 0, 128, 128);
+				textureDynamic.needsUpdate = true;
+				xc.fillStyle = "orange";
+				xc.clearRect(0, 0, 1000, 1000);
+				
+				if(  (boothData.booth_num != "") && (boothData.booth_num != undefined) ){
+					xc.font = "90pt monospace";
+					xc.fillText(boothData.booth_num, 128, 128);
+				}else{
+					xc.font = "15pt monospace";
+					xc.fillText(id, 16, 64);
+				}
+				
+				textureDynamic.needsUpdate = true;
+
+			}
 		});
 
 	};
