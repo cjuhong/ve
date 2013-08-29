@@ -78,7 +78,7 @@ module.exports = function(app, config, mongoose, gridfs) {
   var Model = mongoose.model('Model', ModelSchema);
   var Photo = mongoose.model('Photo', PhotoSchema);
   var Booth = mongoose.model('Booth', BoothSchema);
-  var uploadModel = function(user_id, texture_id, model_id, data_type,title) {
+  var uploadModel = function(user_id, texture_id, model_id, data_type,title,bp) {
     // var shaSum = crypto.createHash('sha256');
     // shaSum.update(password);
     // console.log('Registering ' + email);
@@ -87,10 +87,14 @@ module.exports = function(app, config, mongoose, gridfs) {
       textureId: texture_id,
       modelId: model_id,
       dataType: data_type,
-      name: title
+      name: title,
+      x:bp.x,
+      y:bp.y,
+      z:bp.z
     });
     model.save(uploadCallback);
     console.log('Save command was sent');
+    return model;
   };
   var generateBooth = function(user_id,user_name,xp,yp,zp){
 

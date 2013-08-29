@@ -18,6 +18,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
     user.products = [];
     user.booths = [];
     user.belongs = {};
+    user.booth = { position: {}};
 
 
     VE.mouseVector = new THREE.Vector3();
@@ -148,7 +149,6 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       /********************************************************************************************/
       $.get('/data/models', function(datas) {
         datas.forEach(function(value) {
-
           var texture = new THREE.Texture();
           var loaderImg = new THREE.ImageLoader();
           loaderImg.addEventListener('load', function(event) {
@@ -167,15 +167,56 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
                 child.material.map = texture;
               }
             });
-            // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
-            object.scale.set(2.0, 2.0, 2.0);
+            object.position.set(value.x,value.y,value.z + 400);
+            // object.scale.set(2.0, 2.0, 2.0);
             VE.scene.add(object);
             utils.sceneChildren.push(object);
           });
         });
       });
+      /*get 
+      var loader = new THREE.OBJLoader();
+      loader.load( mURL, function ( object ) {
+          object.traverse(function ( child ) {
+              if ( child instanceof THREE.Mesh ) {
+                  child.geometry.computeBoundingBox();
+                  var bBox = child.geometry.boundingBox;
+              }
+          });
+      };
+      */
+      socket.on("newModel", function(value) {
 
+        // console.log(socket.socket.sessionid);
+        var texture = new THREE.Texture();
+        var loaderImg = new THREE.ImageLoader();
+        var bBox;
+        loaderImg.addEventListener('load', function(event) {
+          texture.image = event.content;
+          texture.needsUpdate = true;
+        });
+        loaderImg.load('/data/' + value.textureId);
 
+        // model
+        var loaderObj = new THREE.OBJLoader();
+
+        loaderObj.load('/data/' + value.modelId, function(object) {
+
+          object.traverse(function(child) {
+            if (child instanceof THREE.Mesh) {
+              child.material.map = texture;
+              child.geometry.computeBoundingBox();
+              bBox = child.geometry.boundingBox;
+            }
+          });
+          // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
+          // object.scale.set(2.0, 2.0, 2.0);
+          object.position.set(user.booth.position.x,-300,user.booth.position.z + 400);
+          VE.scene.add(object);
+          utils.sceneChildren.push(object);
+          console.log(bBox);
+          });
+      });
 
 
 
@@ -249,7 +290,6 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         });
 
       });
-
       socket.on("newBooth", function(data) {
 
         // console.log(socket.socket.sessionid);

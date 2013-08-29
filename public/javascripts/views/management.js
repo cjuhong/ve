@@ -19,7 +19,6 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
       "click button" : "upload"
     },
     upload: function(event){
-      console.log("log");
       var uri = '/data';
       // var upload_model = $("#uploaModel").prop("files")[0];
       var upload_model = $("#uploaModel");
@@ -27,6 +26,8 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
       var upload_photo = $("#uploadPhoto");
       var xhr = new XMLHttpRequest();
       var fd = new FormData();
+      fd.append("bp",JSON.stringify(user.booth.position));
+      console.log(user.booth.position);
       xhr.open('POST', uri, true);
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -47,6 +48,7 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
         fd.append('model', upload_model.prop("files")[0]);
         fd.append('texture', upload_texture.prop("files")[0]);
         fd.append('dataType', "model");
+
       }else if(upload_photo.length > 0){
         fd.append('photo', upload_photo.prop("files")[0]);
         fd.append('dataType', "photo");

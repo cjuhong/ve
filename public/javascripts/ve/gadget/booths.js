@@ -141,12 +141,25 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 
 		VE.scene.add(back_wall);
 		utils.sceneChildren.push(back_wall);
-		user.booths.push(back_wall);
+
+		if(user.userId == boothData.userId){
+			user.booths.push(back_wall);
+			user.booth.position.x = xp;
+			user.booth.position.z = zp;
+			user.booth.position.y = -300;
+		}
+
 		socket.on(id, function(data) {
 			// back_wall.updatePositiontoServer(data.x,data.y,data.z,data.id);
 			back_wall.__dirtyPosition = true;
 			back_wall.position.z = data.z;
 			back_wall.position.x = data.x;
+			if(user.userId == boothData.userId){
+				user.booths.push(back_wall);
+				user.booth.position.x = data.x;
+				user.booth.position.z = data.z;
+				user.booth.position.y = -300;
+			}
 			// console.log("position change");
 			// console.log(back_wall.position.z);
 			// console.log(back_wall.position.x);

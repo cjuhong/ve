@@ -1,18 +1,24 @@
 module.exports = function(app, models,sio) {
 	var gridfs = models.gridfs;
 	app.post('/data', function(req, res) {
+
+		var bp = JSON.parse(req.body.bp);
+		
 		if (req.body.dataType == "model") {
+
 			var options = {
-				content_type: req.files.model.type
+				content_type: req.files['model']['type']
 			};
+
 			gridfs.putGridFileByPath(req.files.model.path, req.files.model.name, options, function(err, result) {
 				var modelId = result.fileId;
 				var modelName = result.filename;
 				var options = {
-					content_type: req.files.texture.type
+					content_type: req.files['texture']['type']
 				};
 				gridfs.putGridFileByPath(req.files.texture.path, req.files.texture.name, options, function(err, result) {
-					models.WebModel.uploadModel(req.session.accountId, result.fileId, modelId, req.body.dataTypes, modelName);
+					var modelData = models.WebModel.uploadModel(req.session.accountId, result.fileId, modelId, req.body.dataType, modelName,bp);
+					sio.sockets.emit("newModel",modelData);
 				});
 			});
 

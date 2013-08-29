@@ -42,10 +42,10 @@ define(['text!templates/assign.html','text!templates/desk_generate.html','text!t
       var that = this;
       $.get('/fethcAllBooths', function(data) {
 
-        data.forEach(function(value) {
+        // data.forEach(function(value) {
 
-          boothData = "<p>" + boothData + value.userName + "</p>";
-        });
+        //   boothData = "<p>" + boothData + value.userName + "</p>";
+        // });
 
         $.get('/accounts/findAllExhibitors', function(exhibitors) {
           that.$('.navList').html(_.template(assignTemplate, { data: data , exhibitors: exhibitors}));
