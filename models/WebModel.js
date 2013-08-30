@@ -116,13 +116,23 @@ module.exports = function(app, config, mongoose, gridfs) {
     return console.log('Upload was created');
   };
 
-  var findAll = function(user_id, callback) {
+
+
+  var findAll = function( callback) {
     // var searchRegex = new RegExp(searchStr, 'i');
-    Model.find({userId:user_id}, function(err, doc) {
+    Model.find(function(err, doc) {
       if(err) return console.log(err);
       callback(doc);
     });
   };
+
+  // var findAll = function(user_id, callback) {
+  //   // var searchRegex = new RegExp(searchStr, 'i');
+  //   Model.find({userId:user_id}, function(err, doc) {
+  //     if(err) return console.log(err);
+  //     callback(doc);
+  //   });
+  // };
   var fethcAllBooths = function(callback) {
     // var searchRegex = new RegExp(searchStr, 'i');
     Booth.find({}, function(err, doc) {

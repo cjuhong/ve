@@ -146,8 +146,20 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       VE.scene.add(boundingBox);
 
 
+      /** male bBox data ****************************
+      max: THREE.Vector3
+      x: 39.299088
+      y: 182.911041
+      z: 18.226076
+      min: THREE.Vector3
+      x: -41.051979
+      y: 0.413709
+      z: -24.715677
+      *****************************/
+
       /********************************************************************************************/
       $.get('/data/models', function(datas) {
+        var bBox;
         datas.forEach(function(value) {
           var texture = new THREE.Texture();
           var loaderImg = new THREE.ImageLoader();
@@ -165,10 +177,22 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
             object.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
                 child.material.map = texture;
+                child.geometry.computeBoundingBox();
+                bBox = child.geometry.boundingBox;
               }
             });
             object.position.set(value.x,value.y,value.z + 400);
-            // object.scale.set(2.0, 2.0, 2.0);
+            var ll = bBox.max.x - bBox.min.x;
+            var ww = bBox.max.z - bBox.min.z;
+            var hh = bBox.max.y - bBox.min.y;
+            var maxV = Math.max(ll,ww,hh);
+            var ratio;
+            if((maxV < 180) || (maxV > 185)){
+              ratio = 180 / maxV;
+              object.scale.set(ratio, ratio, ratio);
+            }
+            // console.log(ratio);
+            // console.log(object);
             VE.scene.add(object);
             utils.sceneChildren.push(object);
           });
@@ -212,9 +236,18 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
           // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
           // object.scale.set(2.0, 2.0, 2.0);
           object.position.set(user.booth.position.x,-300,user.booth.position.z + 400);
+          var ll = bBox.max.x - bBox.min.x;
+          var ww = bBox.max.z - bBox.min.z;
+          var hh = bBox.max.y - bBox.min.y;
+          var maxV = Math.max(ll,ww,hh);
+          var ratio;
+          if((maxV < 180) || (maxV > 185)){
+            ratio = 180 / maxV;
+            object.scale.set(ratio, ratio, ratio);
+          }
           VE.scene.add(object);
           utils.sceneChildren.push(object);
-          console.log(bBox);
+          // console.log(bBox);
           });
       });
 

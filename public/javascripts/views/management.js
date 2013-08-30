@@ -27,7 +27,6 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
       var xhr = new XMLHttpRequest();
       var fd = new FormData();
       fd.append("bp",JSON.stringify(user.booth.position));
-      console.log(user.booth.position);
       xhr.open('POST', uri, true);
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -45,12 +44,15 @@ define(['text!templates/modelUpload.html','text!templates/photoUpload.html','tex
         }
       };
       if(upload_model.length > 0){
-        fd.append('model', upload_model.prop("files")[0]);
-        fd.append('texture', upload_texture.prop("files")[0]);
+        var md = upload_model.prop("files");
+        var mt = upload_texture.prop("files");
+        fd.append('model', md[0]);
+        fd.append('texture', mt[0]);
         fd.append('dataType', "model");
 
       }else if(upload_photo.length > 0){
-        fd.append('photo', upload_photo.prop("files")[0]);
+        var pd = upload_photo.prop("files");
+        fd.append('photo', pd[0]);
         fd.append('dataType', "photo");
       }
 

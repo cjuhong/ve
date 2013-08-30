@@ -27,14 +27,22 @@ module.exports = function(app, models,sio) {
 		res.send(200);
 	});
  
+	// app.get('/data/models', function(req, res) {
+	// 	if (req.session.loggedIn) {
+	// 		console.log("xxxxxxxxxxx log in");
+	// 	models.WebModel.findAll(req.session.accountId, function(models_data) {
+	// 		res.send(models_data);
+	// 	});
+	// }
+	// });
+
 	app.get('/data/models', function(req, res) {
 		if (req.session.loggedIn) {
-		models.WebModel.findAll(req.session.accountId, function(models_data) {
+		models.WebModel.findAll(function(models_data) {
 			res.send(models_data);
 		});
 	}
 	});
-
 
 	app.post('/booth/updateBooth/:id', function(req, res) {
 		// models.WebModel.generateBooth();findOneBooth
