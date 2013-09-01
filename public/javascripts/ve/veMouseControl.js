@@ -29,11 +29,20 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
         switch (evt.button) {
           case 0:
             utils.raycaster = utils.projector.pickingRay(VE.mouseVector.clone(), VE.camera);
-            utils.selectedProducts = utils.raycaster.intersectObjects(user.booths);
+            if(user.role == "organizer"){
+              utils.selectedProducts = utils.raycaster.intersectObjects(utils.sceneChildren,true);
+            }else if(user.role == "exhibitor"){
+              utils.selectedProducts = utils.raycaster.intersectObjects(user.products,true);
+            }else{
+            }
+            
             if (utils.selectedProducts.length > 0) {
               utils.selectedProduct = utils.selectedProducts[0].object;
-              console.log(utils.selectedProducts[0]);
-              utils.intersect_plane.position.y = utils.selectedProduct.position.y;
+              if(utils.selectedProduct.parent.name == "hall"){
+                utils.intersect_plane.position.y = utils.selectedProduct.position.y;
+              }else{
+                utils.intersect_plane.position.y = utils.selectedProduct.parent.position.y;
+              }
             }
             // console.log(utils.intersect_plane.position);
               // if (utils.INTERSECTED != utils.intersects[0].object) {
@@ -79,8 +88,17 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
           if(utils.selectedProduct instanceof Physijs.BoxMesh ){
             utils.selectedProduct.__dirtyPosition = true;
           }
-            utils.selectedProduct.position.x = utils.testObject[0].point.x;
-            utils.selectedProduct.position.z = utils.testObject[0].point.z;
+            if(utils.selectedProduct.parent.name == "hall"){
+              utils.selectedProduct.position.x = utils.testObject[0].point.x;
+              utils.selectedProduct.position.z = utils.testObject[0].point.z;
+            }else{
+              utils.selectedProduct.parent.position.x = utils.testObject[0].point.x;
+              utils.selectedProduct.parent.position.z = utils.testObject[0].point.z;
+            }
+
+            // utils.selectedProduct.position.x = utils.testObject[0].point.x;
+            // utils.selectedProduct.position.z = utils.testObject[0].point.z;
+            
             
           // utils.selectedProduct.__dirtyPosition = true;
 
@@ -95,9 +113,10 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
         y = utils.selectedProduct.position.y;
         z = utils.selectedProduct.position.z;
         id = utils.selectedProduct.id;
-        console.log(utils.selectedProduct);
-        utils.selectedProduct.updatePositiontoServer(x,y,z,id);
-        console.log("from update mouse x: " + x + " z: "+ z);
+
+        if(utils.selectedProduct.updatePositiontoServer != undefined){
+          utils.selectedProduct.updatePositiontoServer(x,y,z,id);
+        }
         utils.selectedProduct = null;
       }
       };

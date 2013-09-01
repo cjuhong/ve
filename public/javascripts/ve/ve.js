@@ -72,6 +72,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       VE.camera.position.set(-2740, 0, 1990);
 
       VE.scene = new Physijs.Scene();
+      VE.scene.name = "hall";
       VE.scene.setGravity(new THREE.Vector3(0, -1000, 0));
       VE.scene.addEventListener(
         'update',
@@ -191,10 +192,11 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
               ratio = 180 / maxV;
               object.scale.set(ratio, ratio, ratio);
             }
-            // console.log(ratio);
-            // console.log(object);
-            VE.scene.add(object);
+            
+            user.products.push(object);
             utils.sceneChildren.push(object);
+            VE.scene.add(object);
+
           });
         });
       });
@@ -245,9 +247,10 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
             ratio = 180 / maxV;
             object.scale.set(ratio, ratio, ratio);
           }
-          VE.scene.add(object);
+          user.products.push(object);
           utils.sceneChildren.push(object);
-          // console.log(bBox);
+          VE.scene.add(object);
+
           });
       });
 
@@ -381,13 +384,12 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         utils.intersects = utils.raycaster.intersectObjects(utils.sceneChildren);
         // utils.intersects = utils.raycaster.intersectObjects(VE.scene.children);
       }else if(user.role == "exhibitor"){
-        utils.intersects = utils.raycaster.intersectObjects(user.products);
+        utils.intersects = utils.raycaster.intersectObjects(user.products,true);
       }else{
-        utils.intersects = utils.raycaster.intersectObjects(user.products);
+        // utils.intersects = utils.raycaster.intersectObjects(user.products);
       }
 
       if (utils.intersects.length > 0) {
-
         if (utils.INTERSECTED != utils.intersects[0].object) {
           if(utils.INTERSECTED){
             utils.INTERSECTED.material.opacity = utils.INTERSECTED.current_opacity;
