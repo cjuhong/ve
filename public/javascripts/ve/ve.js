@@ -14,6 +14,72 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         transparent: true,
       }));
     utils.sceneChildren = [];
+    utils.selectedObject = null;
+    var FizzyText = function() {
+      this.message = ' object control';
+      this.x = 0;
+      this.y = 0;
+      this.z = 0;
+    };
+
+    var fizzyText = new FizzyText();
+    utils.gui = new dat.GUI();
+    utils.gui.previewValueX = null;
+    utils.gui.previewValueY = null;
+    utils.gui.previewValueZ = null;
+    utils.gui.add(fizzyText, 'message');
+    var xController = utils.gui.add(fizzyText, 'x', -200, 200);
+    var yController = utils.gui.add(fizzyText, 'y', -200, 200);
+    var zController = utils.gui.add(fizzyText, 'z', -200, 200);
+    utils.gui.domElement.style.display = 'none';
+
+    xController.onChange(function(value) {
+      if(utils.gui.previewValueX == null){
+        utils.gui.previewValueX = 0;
+        utils.gui.previewValueY = null;
+        utils.gui.previewValueZ = null;
+      }
+      utils.selectedObject.position.x = utils.selectedObject.position.x + (value - utils.gui.previewValueX);
+      utils.gui.previewValueX = value;
+      // Fires on every change, drag, keypress, etc.
+      // console.log("xThe new value is " + value);
+    });
+
+    // xController.onFinishChange(function(value) {
+    //   // Fires when a controller loses focus.
+    //   console.log("xThe new value is " + value);
+    // });
+
+    yController.onChange(function(value) {
+      // Fires on every change, drag, keypress, etc.
+      // console.log("yThe new value is " + value);
+      if(utils.gui.previewValueY == null){
+        utils.gui.previewValueY = 0;
+        utils.gui.previewValueX = null;
+        utils.gui.previewValueZ = null;
+      }
+      utils.selectedObject.position.y = utils.selectedObject.position.y + (value - utils.gui.previewValueY);
+      utils.gui.previewValueY = value;
+
+    });
+
+    zController.onChange(function(value) {
+      // Fires on every change, drag, keypress, etc.
+      // console.log("yThe new value is " + value);
+      if(utils.gui.previewValueZ == null){
+        utils.gui.previewValueZ = 0;
+        utils.gui.previewValueX = null;
+        utils.gui.previewValueY = null;
+      }
+      utils.selectedObject.position.z = utils.selectedObject.position.z + (value - utils.gui.previewValueZ);
+      utils.gui.previewValueZ = value;
+
+    });
+
+    // yController.onFinishChange(function(value) {
+    //   // Fires when a controller loses focus.
+    //   console.log("yThe new value is " + value);
+    // });
 
     user.products = [];
     user.booths = [];
@@ -260,6 +326,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
       /*******************test area**********************************************************/
 
+
       // var combined = new THREE.Geometry();
 
       // var geometry = new THREE.CubeGeometry(70, 70, 70);
@@ -367,9 +434,14 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
     VE.animate = function() {
 
-      if (VE.demo !== null) {
-        VE.demo__dirtyPosition = true;
+      if(utils.selectedObject != null){
+        utils.gui.domElement.style.display = 'block';
+      }else{
+        utils.gui.domElement.style.display = 'none';
       }
+      // if (VE.demo !== null) {
+      //   VE.demo__dirtyPosition = true;
+      // }
       VE.controls.update(VE.clock.getDelta());
       VE.renderer.render(VE.scene, VE.camera);
 
@@ -381,7 +453,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       // utils.intersects = utils.raycaster.intersectObjects(user.products);
       if(user.role == "organizer"){
         // utils.sceneChildren = VE.scene.children.slice(7,-1);
-        utils.intersects = utils.raycaster.intersectObjects(utils.sceneChildren);
+        utils.intersects = utils.raycaster.intersectObjects(utils.sceneChildren,true);
         // utils.intersects = utils.raycaster.intersectObjects(VE.scene.children);
       }else if(user.role == "exhibitor"){
         utils.intersects = utils.raycaster.intersectObjects(user.products,true);

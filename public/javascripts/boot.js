@@ -20,7 +20,7 @@ require.config({
     physi: '/javascripts/libs/physijs/physi'
   },
   shim: {
-    'Sly': ['jQuery'],
+    'Sly': ['jQuery','dat_gui'],
     'Backbone': ['Underscore', 'jQuery'],
     'physi': ['ThreeJs','OBJLoader'],
     'FirstPersonControls': ['ThreeJs'],

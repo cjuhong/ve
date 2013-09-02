@@ -40,8 +40,10 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
               utils.selectedProduct = utils.selectedProducts[0].object;
               if(utils.selectedProduct.parent.name == "hall"){
                 utils.intersect_plane.position.y = utils.selectedProduct.position.y;
+                utils.selectedObject = utils.selectedProduct;
               }else{
                 utils.intersect_plane.position.y = utils.selectedProduct.parent.position.y;
+                utils.selectedObject = utils.selectedProduct.parent;
               }
             }
             // console.log(utils.intersect_plane.position);
@@ -60,6 +62,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
           case 1:
             break;
           case 2:
+            utils.selectedObject = null;
             break;
         }
       };
