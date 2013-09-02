@@ -166,10 +166,22 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         ASPECT,
         NEAR,
         FAR);
-      if(true){
-        console.log(user.booth.position);
-      }
-      VE.camera.position.set(-2740, 0, 1990);
+
+      $.get('/fethcAllBooths', function(data) {
+
+        data.forEach(function(value) {
+          VE.booths(value);
+        });
+
+        // VE.camera.position.set(-2740, 0, 1990);
+        VE.camera.position.set(user.booth.position.x, -200, user.booth.position.z+1000);
+        console.log(VE.camera);
+        // VE.camera.lookAt(new THREE.Vector3(user.booth.position.x,-200,-1000));
+        // console.log(VE.scene.position);
+
+
+      });
+
 
       VE.scene = new Physijs.Scene();
       VE.scene.name = "hall";
@@ -201,7 +213,6 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
           }
           VE.scene.simulate(undefined, 1);
         });
-      VE.camera.lookAt(VE.scene.position);
 
 
       // console.log(VE.intersect_plane instanceof Physijs.BoxMesh);
@@ -433,14 +444,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       /*****************************************************************/
 
 
-      $.get('/fethcAllBooths', function(data) {
 
-        data.forEach(function(value) {
-          // console.log(value);
-          VE.booths(value);
-        });
-
-      });
       socket.on("newBooth", function(data) {
 
         // console.log(socket.socket.sessionid);
@@ -459,8 +463,6 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       VE.controls.movementSpeed = 90;
       VE.controls.noFly = true;
       VE.controls.lookVertical = false;
-
-      // console.log(VE.controls);
       VE.start();
     };
 
