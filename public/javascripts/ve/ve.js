@@ -22,33 +22,35 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       this.z = 0;
     };
 
-    var fizzyText = new FizzyText();
+    utils.fizzyText = new FizzyText();
     utils.gui = new dat.GUI();
     utils.gui.previewValueX = null;
     utils.gui.previewValueY = null;
     utils.gui.previewValueZ = null;
-    utils.gui.add(fizzyText, 'message');
-    var xController = utils.gui.add(fizzyText, 'x', -200, 200);
-    var yController = utils.gui.add(fizzyText, 'y', -200, 200);
-    var zController = utils.gui.add(fizzyText, 'z', -200, 200);
+    utils.gui.previewValueFinishedX = null;
+    utils.gui.previewValueFinishedY = null;
+    utils.gui.previewValueFinishedZ = null;
+    utils.gui.add(utils.fizzyText, 'message');
+    var xController = utils.gui.add(utils.fizzyText, 'x', -400, 400);
+    var yController = utils.gui.add(utils.fizzyText, 'y', -400, 400);
+    var zController = utils.gui.add(utils.fizzyText, 'z', -400, 400);
     utils.gui.domElement.style.display = 'none';
-
     xController.onChange(function(value) {
       if(utils.gui.previewValueX == null){
         utils.gui.previewValueX = 0;
         utils.gui.previewValueY = null;
         utils.gui.previewValueZ = null;
       }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      console.log(utils.selectedObject.position.z);
       utils.selectedObject.position.x = utils.selectedObject.position.x + (value - utils.gui.previewValueX);
       utils.gui.previewValueX = value;
+
       // Fires on every change, drag, keypress, etc.
       // console.log("xThe new value is " + value);
     });
-
-    // xController.onFinishChange(function(value) {
-    //   // Fires when a controller loses focus.
-    //   console.log("xThe new value is " + value);
-    // });
 
     yController.onChange(function(value) {
       // Fires on every change, drag, keypress, etc.
@@ -57,6 +59,9 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         utils.gui.previewValueY = 0;
         utils.gui.previewValueX = null;
         utils.gui.previewValueZ = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
       }
       utils.selectedObject.position.y = utils.selectedObject.position.y + (value - utils.gui.previewValueY);
       utils.gui.previewValueY = value;
@@ -71,15 +76,42 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         utils.gui.previewValueX = null;
         utils.gui.previewValueY = null;
       }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
       utils.selectedObject.position.z = utils.selectedObject.position.z + (value - utils.gui.previewValueZ);
       utils.gui.previewValueZ = value;
 
     });
 
-    // yController.onFinishChange(function(value) {
-    //   // Fires when a controller loses focus.
-    //   console.log("yThe new value is " + value);
-    // });
+    xController.onFinishChange(function(value) {
+      // Fires when a controller loses focus.
+      var currentPosition = utils.selectedObject.position;
+      
+      if(utils.selectedObject.updatePositiontoServer != undefined){
+        console.log(currentPosition.z);
+        utils.selectedObject.updatePositiontoServer(currentPosition.x,currentPosition.y,currentPosition.z,utils.selectedObject._id);
+      }
+    });
+
+    yController.onFinishChange(function(value) {
+      // Fires when a controller loses focus.
+      var currentPosition = utils.selectedObject.position;
+      
+      if(utils.selectedObject.updatePositiontoServer != undefined){
+        utils.selectedObject.updatePositiontoServer(currentPosition.x,currentPosition.y,currentPosition.z,utils.selectedObject._id);
+      }
+    });
+
+    zController.onFinishChange(function(value) {
+      // Fires when a controller loses focus.
+      var currentPosition = utils.selectedObject.position;
+      
+      if(utils.selectedObject.updatePositiontoServer != undefined){
+        utils.selectedObject.updatePositiontoServer(currentPosition.x,currentPosition.y,currentPosition.z,utils.selectedObject._id);
+      }
+    });
+
 
     user.products = [];
     user.booths = [];
@@ -134,7 +166,9 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         ASPECT,
         NEAR,
         FAR);
-
+      if(true){
+        console.log(user.booth.position);
+      }
       VE.camera.position.set(-2740, 0, 1990);
 
       VE.scene = new Physijs.Scene();
@@ -248,7 +282,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
                 bBox = child.geometry.boundingBox;
               }
             });
-            object.position.set(value.x,value.y,value.z + 400);
+            object.position.set(value.x,value.y,value.z);
             var ll = bBox.max.x - bBox.min.x;
             var ww = bBox.max.z - bBox.min.z;
             var hh = bBox.max.y - bBox.min.y;
@@ -258,7 +292,16 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
               ratio = 180 / maxV;
               object.scale.set(ratio, ratio, ratio);
             }
-            
+            object._id = value._id;
+            object.updatePositiontoServer = function(x,y,z,id){
+              $.post('/updateModelPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+            };
+            socket.on("updateModelPosition", function(data) {
+              if(data._id == object._id){
+                console.log(object._id);
+                object.position.set(data.x,data.y,data.z);
+              }
+            });
             user.products.push(object);
             utils.sceneChildren.push(object);
             VE.scene.add(object);
@@ -303,7 +346,11 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
           });
           // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
           // object.scale.set(2.0, 2.0, 2.0);
-          object.position.set(user.booth.position.x,-300,user.booth.position.z + 400);
+          // object.position.set(user.booth.position.x,-300,user.booth.position.z);
+          object.position.set(value.x,value.y,value.z);
+          object.updatePositiontoServer = function(x,y,z,id){
+            $.post('/updateModelPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+          };
           var ll = bBox.max.x - bBox.min.x;
           var ww = bBox.max.z - bBox.min.z;
           var hh = bBox.max.y - bBox.min.y;
@@ -313,6 +360,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
             ratio = 180 / maxV;
             object.scale.set(ratio, ratio, ratio);
           }
+          object._id = value._id;
           user.products.push(object);
           utils.sceneChildren.push(object);
           VE.scene.add(object);
@@ -408,9 +456,9 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       VE.renderer.render(VE.scene, VE.camera);
 
       VE.controls = new THREE.FirstPersonControls(VE.camera);
-      VE.controls.movementSpeed = 70;
+      VE.controls.movementSpeed = 90;
       VE.controls.noFly = true;
-      VE.controls.lookVertical = true;
+      VE.controls.lookVertical = false;
 
       // console.log(VE.controls);
       VE.start();
@@ -438,6 +486,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         utils.gui.domElement.style.display = 'block';
       }else{
         utils.gui.domElement.style.display = 'none';
+
       }
       // if (VE.demo !== null) {
       //   VE.demo__dirtyPosition = true;

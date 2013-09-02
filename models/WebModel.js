@@ -90,7 +90,7 @@ module.exports = function(app, config, mongoose, gridfs) {
       name: title,
       x:bp.x,
       y:bp.y,
-      z:bp.z
+      z:bp.z+400
     });
     model.save(uploadCallback);
     console.log('Save command was sent');
@@ -153,11 +153,22 @@ module.exports = function(app, config, mongoose, gridfs) {
     });
   };
 
+  var findOneModel = function(id,callback) {
+
+    Model.findOne({
+      _id: id
+    }, function(err, doc) {
+      callback(doc);
+    });
+  };
+
+
   return {
     uploadModel: uploadModel,
     findAll:findAll,
     generateBooth: generateBooth,
     fethcAllBooths: fethcAllBooths,
-    findOneBooth: findOneBooth
+    findOneBooth: findOneBooth,
+    findOneModel: findOneModel
   };
 };

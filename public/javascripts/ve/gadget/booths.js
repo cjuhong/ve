@@ -127,11 +127,12 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
 		back_wall.add(top_wall);
 		
 		back_wall.id = id;
+		back_wall._id = id;
 		back_wall.updatePositiontoServer = function(x,y,z,id){
+
 			$.post('/booth/updateBoothPosition/'+id,{'xp':x,'zp':z},function(data){
 			  // console.log(data);
 			});
-			// console.log("updatePositiontoServer " +"x: " + x +"z: " + z);
 			// console.log("message");
 			socket.emit("updatePosition", {"x": x, "y":y, "z":z,"id":id});
 			// socket.on(id, function(data) {

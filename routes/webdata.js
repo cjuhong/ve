@@ -68,6 +68,40 @@ module.exports = function(app, models,sio) {
 		// console.log(req.body);
 	});
 
+
+	app.post('/updateModelPosition/:id', function(req, res) {
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var xp = req.body.xp;
+		var yp = req.body.yp;
+		var zp = req.body.zp;
+		// console.log(req.body.zp);
+		// console.log(xp);
+		// console.log(yp);
+		// console.log(zp);
+		// console.log(id);
+		// return;
+		models.WebModel.findOneModel(id,function(model){
+			console.log(model);
+			console.log(zp);
+			model.x = xp;
+			model.y = yp;
+			model.z = zp;
+			// console.log(model.z);
+			model.save(function(err){
+				if(err){
+					console.log(err);
+				}
+			});
+			// console.log(model);
+			sio.sockets.emit("updateModelPosition",model);
+
+
+		});
+		res.send("ok");
+	});
+
+
 	app.post('/booth/updateBoothPosition/:id', function(req, res) {
 		// models.WebModel.generateBooth();findOneBooth
 		var id = req.params.id;
