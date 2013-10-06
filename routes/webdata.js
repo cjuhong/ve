@@ -22,6 +22,16 @@ module.exports = function(app, models,sio) {
 				});
 			});
 
+		}else {
+			var options = {
+				content_type: req.files['photo']['type']
+			};
+			gridfs.putGridFileByPath(req.files.photo.path, req.files.photo.name, options, function(err, result) {
+				var photoName = result.filename;
+				var photoData = models.WebModel.uploadPhoto(req.session.accountId, result.fileId, req.body.dataType, photoName,bp);
+				sio.sockets.emit("newPhoto",photoData);
+				console.log(photoData);
+			});
 		}
 
 		res.send(200);
@@ -40,6 +50,14 @@ module.exports = function(app, models,sio) {
 		if (req.session.loggedIn) {
 		models.WebModel.findAll(function(models_data) {
 			res.send(models_data);
+		});
+	}
+	});
+
+	app.get('/data/photos', function(req, res) {
+		if (req.session.loggedIn) {
+		models.WebModel.findAllPhoto(function(photos_data) {
+			res.send(photos_data);
 		});
 	}
 	});
@@ -67,6 +85,27 @@ module.exports = function(app, models,sio) {
 		// console.log(id);
 		// console.log(req.body);
 	});
+
+	app.post('/updatePhotoPosition/:id', function(req, res) {
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var xp = req.body.xp;
+		var yp = req.body.yp;
+		var zp = req.body.zp;
+		models.WebModel.findOnePhoto(id,function(photo){
+			photo.x = xp;
+			photo.y = yp;
+			photo.z = zp;
+			photo.save(function(err){
+				if(err){
+					console.log(err);
+				}
+			});
+			sio.sockets.emit("updatePhotoPosition",photo);
+		});
+		res.send("ok");
+	});
+
 
 
 	app.post('/updateModelPosition/:id', function(req, res) {

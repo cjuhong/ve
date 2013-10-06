@@ -34,6 +34,7 @@ define(['views/message', 'NavigationSly'], function(Message, NavigationSly) {
             }else if(user.role == "exhibitor"){
               utils.selectedProducts = utils.raycaster.intersectObjects(user.products,true);
             }else{
+              utils.selectedProducts = [];
             }
             
             if (utils.selectedProducts.length > 0) {

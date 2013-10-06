@@ -167,20 +167,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         NEAR,
         FAR);
 
-      $.get('/fethcAllBooths', function(data) {
 
-        data.forEach(function(value) {
-          VE.booths(value);
-        });
-
-        // VE.camera.position.set(-2740, 0, 1990);
-        VE.camera.position.set(user.booth.position.x, -200, user.booth.position.z+1000);
-        console.log(VE.camera);
-        // VE.camera.lookAt(new THREE.Vector3(user.booth.position.x,-200,-1000));
-        // console.log(VE.scene.position);
-
-
-      });
 
 
       VE.scene = new Physijs.Scene();
@@ -270,6 +257,23 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       *****************************/
 
       /********************************************************************************************/
+      $.get('/fethcAllBooths', function(data) {
+
+        data.forEach(function(value) {
+          VE.booths(value);
+        });
+
+        // VE.camera.position.set(-2740, 0, 1990);
+        // console.log();
+        if(user.booth.position.x != undefined){
+          VE.camera.position.set(user.booth.position.x, -300, user.booth.position.z+1000);
+        }
+        // VE.camera.lookAt(new THREE.Vector3(user.booth.position.x,-200,-1000));
+        // console.log(VE.scene.position);
+
+
+      });
+
       $.get('/data/models', function(datas) {
         var bBox;
         datas.forEach(function(value) {
@@ -320,6 +324,66 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
           });
         });
       });
+
+
+    $.get('/data/photos', function(datas) {
+
+      datas.forEach(function(value) {
+
+        var photoTexture = new THREE.ImageUtils.loadTexture('/data/' + value.photoId);
+        var cubeMaterial = new THREE.MeshBasicMaterial({
+                             map:photoTexture,
+                             side:THREE.DoubleSide
+                         });
+        var cubeGeometry = new THREE.CubeGeometry(80, 80, 1);
+        var cubePhoto = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cubePhoto.position.set(value.x,value.y,value.z);
+        cubePhoto._id = value._id;
+
+        cubePhoto.updatePositiontoServer = function(x,y,z,id){
+          $.post('/updatePhotoPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
+        socket.on("updatePhotoPosition", function(data) {
+          if(data._id == cubePhoto._id){
+            console.log(cubePhoto._id);
+            cubePhoto.position.set(data.x,data.y,data.z);
+          }
+        });
+        user.products.push(cubePhoto);
+        utils.sceneChildren.push(cubePhoto);
+        VE.scene.add(cubePhoto);
+
+      });
+    });
+
+
+    socket.on("newModel", function(value) {
+
+      var photoTexture = new THREE.ImageUtils.loadTexture('/data/' + value.photoId);
+      var cubeMaterial = new THREE.MeshBasicMaterial({
+                           map:photoTexture,
+                           side:THREE.DoubleSide
+                       });
+      var cubeGeometry = new THREE.CubeGeometry(80, 80, 1);
+      var cubePhoto = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      cubePhoto.position.set(value.x,value.y,value.z);
+      cubePhoto._id = value._id;
+
+      cubePhoto.updatePositiontoServer = function(x,y,z,id){
+        $.post('/updatePhotoPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+      };
+      socket.on("updatePhotoPosition", function(data) {
+        if(data._id == cubePhoto._id){
+          console.log(cubePhoto._id);
+          cubePhoto.position.set(data.x,data.y,data.z);
+        }
+      });
+      user.products.push(cubePhoto);
+      utils.sceneChildren.push(cubePhoto);
+      VE.scene.add(cubePhoto);
+
+    });
+
       /*get 
       var loader = new THREE.OBJLoader();
       loader.load( mURL, function ( object ) {
@@ -384,62 +448,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
 
 
       /*******************test area**********************************************************/
-
-
-      // var combined = new THREE.Geometry();
-
-      // var geometry = new THREE.CubeGeometry(70, 70, 70);
-
-      // var geometry2 = new THREE.CubeGeometry(170, 170, 170);
-
-      // var mesh1 = new Physijs.BoxMesh( geometry,new THREE.MeshBasicMaterial( { color: 0xff00ff } ) );
-      // mesh1.position.x = -200;
-
-      // var mesh2 = new Physijs.BoxMesh( geometry2 ,new THREE.MeshBasicMaterial( { color: 0xbb00aa } ));
-      // mesh2.position.x = 700;
-
-      // THREE.GeometryUtils.merge( combined, mesh1 );
-      // THREE.GeometryUtils.merge( combined, mesh2 );
-
-      // // var mesh = new THREE.Mesh( combined );
-      // var mesh = new Physijs.BoxMesh( combined, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
-      // console.log(mesh.position);
-      // mesh.position.set(-900,9,99);
-      // console.log(mesh.position);
-      // VE.scene.add( mesh );
-
-
-      // var material = new THREE.MeshNormalMaterial();
-      var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } );
-      // var sphereGeometry = new THREE.SphereGeometry(50, 32, 16);
-      // var sphere = new THREE.Mesh( sphereGeometry, material );
-      // sphere.position.set(-60, 55, 0);
-      // VE.scene.add( sphere );    
-
-      // var outlineMaterial1 = new THREE.MeshBasicMaterial( { color: 0xff0000, side: THREE.BackSide } );
-      // var outlineMesh1 = new THREE.Mesh( sphereGeometry, outlineMaterial1 );
-      // outlineMesh1.position = sphere.position;
-      // outlineMesh1.scale.multiplyScalar(1.05);
-      // VE.scene.add( outlineMesh1 );
-
-      var cubeGeometry = new THREE.CubeGeometry(80, 80, 80);
-      var cube2 = new THREE.Mesh(cubeGeometry, material);
-      cube2.position.set(100, 0, 0);
-
-      var cubeGeometry = new THREE.CubeGeometry(80, 80, 80);
-      var cube = new THREE.Mesh(cubeGeometry, material);
-      cube.position.set(-2160, -160, 1400);
-      // console.log(cube.material);
-      cube.add(cube2);
-      VE.scene.add(cube);
-      user.products.push(cube);
-      utils.sceneChildren.push(cube);
-
-      // var outlineMaterial2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
-      // var outlineMesh2 = new THREE.Mesh( cubeGeometry, outlineMaterial2 );
-      // outlineMesh2.position = cube.position;
-      // // outlineMesh2.scale.multiplyScalar(1.05);
-      // VE.scene.add( outlineMesh2 );
+ 
 
       /*****************************************************************/
 
@@ -509,7 +518,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       }else if(user.role == "exhibitor"){
         utils.intersects = utils.raycaster.intersectObjects(user.products,true);
       }else{
-        // utils.intersects = utils.raycaster.intersectObjects(user.products);
+        utils.intersects = utils.raycaster.intersectObjects(user.products);
       }
 
       if (utils.intersects.length > 0) {

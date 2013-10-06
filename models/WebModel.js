@@ -20,6 +20,15 @@ module.exports = function(app, config, mongoose, gridfs) {
     userId: {
       type: mongoose.Schema.ObjectId,
     },
+    x:{
+      type: Number
+    },
+    y:{
+      type: Number
+    },
+    z:{
+      type: Number
+    },
     name: {
       type: String
     }
@@ -96,6 +105,26 @@ module.exports = function(app, config, mongoose, gridfs) {
     console.log('Save command was sent');
     return model;
   };
+
+
+  var uploadPhoto = function(user_id, photo_id, data_type,title,bp) {
+    // var shaSum = crypto.createHash('sha256');
+    // shaSum.update(password);
+    // console.log('Registering ' + email);
+    var photo = new Photo({
+      userId: user_id,
+      photoId: photo_id,
+      dataType: data_type,
+      name: title,
+      x:bp.x,
+      y:bp.y,
+      z:bp.z+400
+    });
+    photo.save(uploadCallback);
+    console.log('Save command was sent');
+    return photo;
+  };
+
   var generateBooth = function(user_id,user_name,xp,yp,zp){
 
         var booth = new Booth({
@@ -121,6 +150,14 @@ module.exports = function(app, config, mongoose, gridfs) {
   var findAll = function( callback) {
     // var searchRegex = new RegExp(searchStr, 'i');
     Model.find(function(err, doc) {
+      if(err) return console.log(err);
+      callback(doc);
+    });
+  };
+
+    var findAllPhoto = function( callback) {
+    // var searchRegex = new RegExp(searchStr, 'i');
+    Photo.find(function(err, doc) {
       if(err) return console.log(err);
       callback(doc);
     });
@@ -162,13 +199,24 @@ module.exports = function(app, config, mongoose, gridfs) {
     });
   };
 
+  var findOnePhoto = function(id,callback) {
+
+    Photo.findOne({
+      _id: id
+    }, function(err, doc) {
+      callback(doc);
+    });
+  };
 
   return {
     uploadModel: uploadModel,
     findAll:findAll,
+    findOnePhoto: findOnePhoto,
     generateBooth: generateBooth,
     fethcAllBooths: fethcAllBooths,
     findOneBooth: findOneBooth,
+    uploadPhoto: uploadPhoto,
+    findAllPhoto: findAllPhoto,
     findOneModel: findOneModel
   };
 };
