@@ -15,26 +15,139 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       }));
     utils.sceneChildren = [];
     utils.selectedObject = null;
-    var FizzyText = function() {
-      this.message = ' object control';
-      this.x = 0;
-      this.y = 0;
-      this.z = 0;
+    var FizzyText =  {
+      message : ' object control',
+      x : 0,
+      y : 0,
+      z : 0,
+      rotateX:0,
+      rotateY:0,
+      rotateZ:0,
+      scaleUp:1,
+      scaleDown:1,
+      reset: function(){
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.rotateX = 0;
+        this.rotateY = 0;
+        this.rotateZ = 0;
+        this.scaleUp = 1;
+        this.scaleDown = 1;
+      }
     };
 
-    utils.fizzyText = new FizzyText();
+    utils.fizzyText = FizzyText;
     utils.gui = new dat.GUI();
     utils.gui.previewValueX = null;
     utils.gui.previewValueY = null;
     utils.gui.previewValueZ = null;
+
+    utils.gui.previewValueRX = null;
+    utils.gui.previewValueRY = null;
+    utils.gui.previewValueRZ = null;
+
+    utils.gui.previewValueSU = null;
+    utils.gui.previewValueSD = null;
+
     utils.gui.previewValueFinishedX = null;
     utils.gui.previewValueFinishedY = null;
     utils.gui.previewValueFinishedZ = null;
     utils.gui.add(utils.fizzyText, 'message');
-    var xController = utils.gui.add(utils.fizzyText, 'x', -400, 400);
-    var yController = utils.gui.add(utils.fizzyText, 'y', -400, 400);
-    var zController = utils.gui.add(utils.fizzyText, 'z', -400, 400);
+    var xController = utils.gui.add(utils.fizzyText, 'x', -400, 400).listen();
+    var yController = utils.gui.add(utils.fizzyText, 'y', -400, 400).listen();
+    var zController = utils.gui.add(utils.fizzyText, 'z', -400, 400).listen();
+
+    var rxController = utils.gui.add(utils.fizzyText, 'rotateX', -3.2, 3.2).step(0.1).listen();
+    var ryController = utils.gui.add(utils.fizzyText, 'rotateY', -3.2, 3.2).listen();
+    var rzController = utils.gui.add(utils.fizzyText, 'rotateZ', -3.2, 3.2).listen();
+
+
+    var suController = utils.gui.add(utils.fizzyText, 'scaleUp', 1, 20).step(1).listen();
+    var sdController = utils.gui.add(utils.fizzyText, 'scaleDown', 1, 20).step(1).listen();
+
     utils.gui.domElement.style.display = 'none';
+
+    suController.onChange(function(value) {
+      if(utils.gui.previewValueSU == null){
+        utils.gui.previewValueSU = 0;
+        utils.gui.previewValueSD = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      utils.selectedObject.scale.x = utils.selectedObject.scale.x + (value - utils.gui.previewValueSU);
+      utils.selectedObject.scale.y = utils.selectedObject.scale.y + (value - utils.gui.previewValueSU);
+      utils.selectedObject.scale.z = utils.selectedObject.scale.z + (value - utils.gui.previewValueSU);
+
+      utils.gui.previewValueSU = value;
+
+    });
+
+
+    sdController.onChange(function(value) {
+      if(utils.gui.previewValueSD == null){
+        utils.gui.previewValueSD = 0;
+        utils.gui.previewValueSU = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      utils.selectedObject.scale.x = utils.selectedObject.scale.x - (value - utils.gui.previewValueSD);
+      utils.selectedObject.scale.y = utils.selectedObject.scale.y - (value - utils.gui.previewValueSD);
+      utils.selectedObject.scale.z = utils.selectedObject.scale.z - (value - utils.gui.previewValueSD);
+
+      utils.gui.previewValueSD = value;
+
+    });
+
+
+    rxController.onChange(function(value) {
+      if(utils.gui.previewValueRX == null){
+        utils.gui.previewValueRX = 0;
+        utils.gui.previewValueRY = null;
+        utils.gui.previewValueRZ = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      // console.log(utils.selectedObject.position.z);
+      utils.selectedObject.rotation.x = utils.selectedObject.rotation.x + (value - utils.gui.previewValueRX);
+      utils.gui.previewValueRX = value;
+
+    });
+
+    ryController.onChange(function(value) {
+      if(utils.gui.previewValueRY == null){
+        utils.gui.previewValueRY = 0;
+        utils.gui.previewValueRX = null;
+        utils.gui.previewValueRZ = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      // console.log(utils.selectedObject.position.z);
+      utils.selectedObject.rotation.y = utils.selectedObject.rotation.y + (value - utils.gui.previewValueRY);
+      utils.gui.previewValueRY = value;
+
+    });
+
+    rzController.onChange(function(value) {
+      if(utils.gui.previewValueRZ == null){
+        utils.gui.previewValueRZ = 0;
+        utils.gui.previewValueRY = null;
+        utils.gui.previewValueRX = null;
+      }
+      if(utils.selectedObject instanceof Physijs.BoxMesh ){
+        utils.selectedObject.__dirtyPosition = true;
+      }
+      // console.log(utils.selectedObject.position.z);
+      utils.selectedObject.rotation.z = utils.selectedObject.rotation.z + (value - utils.gui.previewValueRZ);
+      utils.gui.previewValueRZ = value;
+
+    });
+
+
     xController.onChange(function(value) {
       if(utils.gui.previewValueX == null){
         utils.gui.previewValueX = 0;
@@ -44,7 +157,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       if(utils.selectedObject instanceof Physijs.BoxMesh ){
         utils.selectedObject.__dirtyPosition = true;
       }
-      console.log(utils.selectedObject.position.z);
+      // console.log(utils.selectedObject.position.z);
       utils.selectedObject.position.x = utils.selectedObject.position.x + (value - utils.gui.previewValueX);
       utils.gui.previewValueX = value;
 
@@ -89,7 +202,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       var currentPosition = utils.selectedObject.position;
       
       if(utils.selectedObject.updatePositiontoServer != undefined){
-        console.log(currentPosition.z);
+        // console.log(currentPosition.z);
         utils.selectedObject.updatePositiontoServer(currentPosition.x,currentPosition.y,currentPosition.z,utils.selectedObject._id);
       }
     });
@@ -112,6 +225,41 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       }
     });
 
+
+    rxController.onFinishChange(function(value) {
+      var currentRotation = utils.selectedObject.rotation;
+      if(utils.selectedObject.updateRotationtoServer != undefined){
+        utils.selectedObject.updateRotationtoServer(currentRotation.x,currentRotation.y,currentRotation.z,utils.selectedObject._id);
+      }
+    });
+
+    ryController.onFinishChange(function(value) {
+      var currentRotation = utils.selectedObject.rotation;
+      if(utils.selectedObject.updateRotationtoServer != undefined){
+        utils.selectedObject.updateRotationtoServer(currentRotation.x,currentRotation.y,currentRotation.z,utils.selectedObject._id);
+      }
+    });
+
+    rzController.onFinishChange(function(value) {
+      var currentRotation = utils.selectedObject.rotation;
+      if(utils.selectedObject.updateRotationtoServer != undefined){
+        utils.selectedObject.updateRotationtoServer(currentRotation.x,currentRotation.y,currentRotation.z,utils.selectedObject._id);
+      }
+    });
+
+    suController.onFinishChange(function(value) {
+      var currentScale = utils.selectedObject.scale;
+      if(utils.selectedObject.updateScaletoServer != undefined){
+        utils.selectedObject.updateScaletoServer(currentScale.x,currentScale.y,currentScale.z,utils.selectedObject._id);
+      }
+    });
+
+    sdController.onFinishChange(function(value) {
+      var currentScale = utils.selectedObject.scale;
+      if(utils.selectedObject.updateScaletoServer != undefined){
+        utils.selectedObject.updateScaletoServer(currentScale.x,currentScale.y,currentScale.z,utils.selectedObject._id);
+      }
+    });
 
     user.products = [];
     user.booths = [];
@@ -311,6 +459,12 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
             object.updatePositiontoServer = function(x,y,z,id){
               $.post('/updateModelPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
             };
+            object.updateRotationtoServer = function(x,y,z,id){
+              $.post('/updateModelRotation/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+            };
+            object.updateScaletoServer = function(x,y,z,id){
+              $.post('/updateModelScale/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+            };
             socket.on("updateModelPosition", function(data) {
               if(data._id == object._id){
                 console.log(object._id);
@@ -343,6 +497,12 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
         cubePhoto.updatePositiontoServer = function(x,y,z,id){
           $.post('/updatePhotoPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
         };
+        object.updateRotationtoServer = function(x,y,z,id){
+          $.post('/updatePhototRotation/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
+        object.updateScaletoServer = function(x,y,z,id){
+          $.post('/updatePhotoScale/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
         socket.on("updatePhotoPosition", function(data) {
           if(data._id == cubePhoto._id){
             console.log(cubePhoto._id);
@@ -372,6 +532,12 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       cubePhoto.updatePositiontoServer = function(x,y,z,id){
         $.post('/updatePhotoPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
       };
+      object.updateRotationtoServer = function(x,y,z,id){
+        $.post('/updateModelRotation/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+      };
+      object.updateScaletoServer = function(x,y,z,id){
+        $.post('/updateModelScale/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+      };
       socket.on("updatePhotoPosition", function(data) {
         if(data._id == cubePhoto._id){
           console.log(cubePhoto._id);
@@ -395,52 +561,36 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
           });
       };
       */
-      socket.on("newModel", function(value) {
+      socket.on("newPhoto", function(value) {
+        var photoTexture = new THREE.ImageUtils.loadTexture('/data/' + value.photoId);
+        var cubeMaterial = new THREE.MeshBasicMaterial({
+                             map:photoTexture,
+                             side:THREE.DoubleSide
+                         });
+        var cubeGeometry = new THREE.CubeGeometry(80, 80, 1);
+        var cubePhoto = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cubePhoto.position.set(value.x,value.y,value.z);
+        cubePhoto._id = value._id;
 
-        // console.log(socket.socket.sessionid);
-        var texture = new THREE.Texture();
-        var loaderImg = new THREE.ImageLoader();
-        var bBox;
-        loaderImg.addEventListener('load', function(event) {
-          texture.image = event.content;
-          texture.needsUpdate = true;
-        });
-        loaderImg.load('/data/' + value.textureId);
-
-        // model
-        var loaderObj = new THREE.OBJLoader();
-
-        loaderObj.load('/data/' + value.modelId, function(object) {
-
-          object.traverse(function(child) {
-            if (child instanceof THREE.Mesh) {
-              child.material.map = texture;
-              child.geometry.computeBoundingBox();
-              bBox = child.geometry.boundingBox;
-            }
-          });
-          // object.position.set(0,0-VE.boundingBoxConfig.height/2,300);
-          // object.scale.set(2.0, 2.0, 2.0);
-          // object.position.set(user.booth.position.x,-300,user.booth.position.z);
-          object.position.set(value.x,value.y,value.z);
-          object.updatePositiontoServer = function(x,y,z,id){
-            $.post('/updateModelPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
-          };
-          var ll = bBox.max.x - bBox.min.x;
-          var ww = bBox.max.z - bBox.min.z;
-          var hh = bBox.max.y - bBox.min.y;
-          var maxV = Math.max(ll,ww,hh);
-          var ratio;
-          if((maxV < 180) || (maxV > 185)){
-            ratio = 180 / maxV;
-            object.scale.set(ratio, ratio, ratio);
+        cubePhoto.updatePositiontoServer = function(x,y,z,id){
+          $.post('/updatePhotoPosition/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
+        object.updateRotationtoServer = function(x,y,z,id){
+          $.post('/updatePhototRotation/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
+        object.updateScaletoServer = function(x,y,z,id){
+          $.post('/updatePhotoScale/'+id,{'xp':x,'zp':z,'yp':y},function(data){ });
+        };
+        socket.on("updatePhotoPosition", function(data) {
+          if(data._id == cubePhoto._id){
+            console.log(cubePhoto._id);
+            cubePhoto.position.set(data.x,data.y,data.z);
           }
-          object._id = value._id;
-          user.products.push(object);
-          utils.sceneChildren.push(object);
-          VE.scene.add(object);
-
-          });
+        });
+        user.products.push(cubePhoto);
+        utils.sceneChildren.push(cubePhoto);
+        VE.scene.add(cubePhoto);
+  
       });
 
 
@@ -496,6 +646,7 @@ define(['ve/gadget','ve/veMouseControl','ve/veWall', 've/veCeiling', 've/veGroun
       if(utils.selectedObject != null){
         utils.gui.domElement.style.display = 'block';
       }else{
+        FizzyText.reset();
         utils.gui.domElement.style.display = 'none';
 
       }
