@@ -57,6 +57,18 @@ module.exports = function(app, config, mongoose, gridfs) {
     dataType: {
       type: String
     },
+    xr:{
+      type: Number
+    },
+    yr:{
+      type: Number
+    },
+    zr:{
+      type: Number
+    },
+    scale:{
+      type: Number
+    },
     name: {
       type: String
     }

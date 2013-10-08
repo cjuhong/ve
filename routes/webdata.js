@@ -206,4 +206,55 @@ module.exports = function(app, models,sio) {
 
 	});
 
+
+	app.post('/updateModelRotation/:id', function(req, res) {
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var xr = req.body.xr;
+		var yr = req.body.yr;
+		var zr = req.body.zr;
+		console.log(req.body);
+
+		models.WebModel.findOneModel(id,function(model){
+			console.log(model);
+			model.xr = xr;
+			model.yr = yr;
+			model.zr = zr;
+			// console.log(model.z);
+			model.save(function(err){
+				if(err){
+					console.log(err);
+				}else{
+					console.log(model);
+				}
+			});
+			sio.sockets.emit("updateModelRotation",model);
+		});
+		res.send("ok");
+	});
+
+
+	app.post('/updateModelScale/:id', function(req, res) {
+		// models.WebModel.generateBooth();findOneBooth
+		var id = req.params.id;
+		var scale = req.body.xs;
+		console.log(req.body);
+
+		models.WebModel.findOneModel(id,function(model){
+			console.log(model);
+			model.scale = scale;
+
+			// console.log(model.z);
+			model.save(function(err){
+				if(err){
+					console.log(err);
+				}else{
+					console.log(model);
+				}
+			});
+			sio.sockets.emit("updateModelScale",model);
+		});
+		res.send("ok");
+	});
+
 };
